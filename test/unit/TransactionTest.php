@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 use Domain\KeyMaster;
 use Domain\TransactionNew;
 use Domain\TransactionString;
+use Domain\Factory\TransactionNewFactory;
+use Domain\Factory\TransactionMiningFactory;
 
 
 
@@ -113,4 +115,32 @@ class TransactionTest extends TestCase
 
         $this->assertEquals($te->ttl, $te->timeToSingBlock());
     }
+
+    public function test_factory_transaction_new()
+    {
+        $tnf = new TransactionNewFactory();
+
+        $tn = $tnf->produce();
+
+        $te = (new TransactionString($tn->toString()))->fromString();
+
+        $this->assertTrue($te->verifyHash());
+        $this->assertTrue($te->verifySign());
+        $this->assertTrue($te->verifyTtl());
+
+    }
+
+    public function test_factory_transaction_mining()
+    {
+        $tf = new TransactionMiningFactory();
+
+        $t = $tf->produce();
+
+        $te = (new TransactionString($t->toString()))->fromString();
+
+        $this->assertTrue($te->verifyHash());
+        $this->assertTrue($te->verifySign());
+        $this->assertTrue($te->verifyTtl());
+    }
+
 }

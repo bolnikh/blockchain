@@ -61,7 +61,11 @@ class TransactionExists
 
     public function verifySign() : bool
     {
-        return Sign::check($this->makeString(), $this->sign, $this->from);
+        if ($this->isMining()) {
+            return Sign::check($this->makeString(), $this->sign, $this->to);
+        } else {
+            return Sign::check($this->makeString(), $this->sign, $this->from);
+        }
     }
 
     public function calcHash() : string

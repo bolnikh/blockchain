@@ -20,7 +20,6 @@ class KeyMasterTest extends TestCase
         $km = new KeyMaster();
         $km->generateKey();
 
-        var_dump($km->getPrivateKey());
         $this->assertTrue(strlen($km->getPublicKey()) > 100);
         $this->assertTrue(strlen($km->getPrivateKey()) > 400);
 
