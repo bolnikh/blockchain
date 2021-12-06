@@ -6,12 +6,12 @@ namespace Domain;
 
 class BlockNew extends BlockExists
 {
-    private string $private_key;
+    private string $mining_private_key;
     private bool $is_mining =  true;
     private int $mining_award = 10;
 
     private array $fillable = [
-        'id', 'prev_block_hash', 'created_at', 'transactions', 'difficulty', 'private_key', 'is_mining', 'mining_award'
+        'id', 'prev_block_hash', 'created_at', 'transactions', 'difficulty', 'mining_private_key', 'is_mining', 'mining_award'
     ];
 
     public function __construct($data = []) {
@@ -20,23 +20,36 @@ class BlockNew extends BlockExists
                 $this->$k = $v;
             }
         }
+
+        if (empty($this->created_at))
+        {
+            $this->created_at = time();
+        }
+
+        $this->createMiningAwardTransaction();
+        $this->transactions_hash = $this->getTransactionsHash();
+        $this->hash = $this->calcHash();
+
+        if (!$this->findProof())
+        {
+            throw new BlockNewProofException('Cannot proof block');
+        }
+
+
     }
 
 
-    public function createMiningAwardTransaction() : ?TransactionNew
+    public function createMiningAwardTransaction() : void
     {
         if (!$this->is_mining || $this->mining_award == 0)
         {
-            return false;
+            return ;
         }
 
-        $tr = new TransactionNew(
+        $tr = new TransactionMining(
             [
-                'to' => $this->to,
                 'amount' => $this->mining_award,
-                'created_at' => $this->created_at,
-                'ttl' => $this->ttl,
-                'private_key' => $this->private_key,
+                'private_key' => $this->mining_private_key,
             ]
         );
 
@@ -48,7 +61,7 @@ class BlockNew extends BlockExists
     {
         foreach ($this->transactions as $k => $tr)
         {
-            if (false === $tr->isValid()) {
+            if (false === $tr->isValidForNewBlock()) {
                 unset($this->transactions[$k]);
                 break;
             }
@@ -64,5 +77,17 @@ class BlockNew extends BlockExists
     public function createBlock()
     {
         $tr_hash = $this->getTransactionsHash();
+    }
+
+    public function findProof($from = 0, $to = 1000000) : bool
+    {
+        for ($i = $from; $i < $to; $i++) {
+            $this->proof = $i;
+            if ($this->verifyProof())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

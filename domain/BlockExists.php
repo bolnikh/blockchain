@@ -51,11 +51,11 @@ class BlockExists
         return $this->transactions_hash === $this->getTransactionsHash();
     }
 
-    public function verifyTransaction() : bool
+    public function verifyTransactions() : bool
     {
         foreach ($this->transactions as $tr)
         {
-            if (false === $tr->isValid()) {
+            if (false === $tr->isValidForNewBlock()) {
                 return false;
             }
             if (false === $this->checkBalance($tr))
@@ -75,7 +75,7 @@ class BlockExists
     {
         foreach ($this->transactions as $tr)
         {
-            if (false === $this->verifyTransaction($tr))
+            if (false === $this->verifyTransactions($tr))
             {
                 return false;
             }
@@ -91,12 +91,16 @@ class BlockExists
             .$this->created_at
             .$this->transactions_hash
             .$this->difficulty
-            .$this->proof
         );
     }
 
     public function verifyHash() : bool
     {
         return $this->hash == $this->calcHash();
+    }
+
+    public function getHash() : string
+    {
+        return $this->hash;
     }
 }

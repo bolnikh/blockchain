@@ -3,17 +3,20 @@
 
 declare(strict_types=1);
 
-namespace Domain;
+namespace Domain\Interfaces;
+
+use Domain\BlockNew;
+use Domain\BlockExists;
 
 interface BlockChainStorageInterface
 {
-    public function store(Block $block) : bool;
+    public function store(BlockNew|BlockExists $block) : bool;
 
 
-    public function getById(int $id) : ?Block;
+    public function getById(int $id) : BlockNew|BlockExists|null;
 
 
-    public function getByHash(string $hash) : ?Block;
+    public function getByHash(string $hash) : BlockNew|BlockExists|null;
 
     public function getMaxId() : int;
 

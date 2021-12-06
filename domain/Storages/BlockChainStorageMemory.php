@@ -3,7 +3,11 @@
 
 declare(strict_types=1);
 
-namespace Domain;
+namespace Domain\Storages;
+
+use Domain\BlockExists;
+use Domain\BlockNew;
+use Domain\Interfaces\BlockChainStorageInterface;
 
 
 class BlockChainStorageMemory implements BlockChainStorageInterface
@@ -15,26 +19,34 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
         $this->blockChain = $blockChain;
     }
 
-    public function store(Block $block) : bool
+    public function store(BlockNew|BlockExists $block) : bool
     {
-        $this->blockChain[] = $block;
+        $this->blockChain[$block->id - 1] = $block;
+        return true;
+    }
+
+    public function emptyTail(int $start_id) : void
+    {
+        assert($start_id >= 0);
+        while (isset($this->blockChain[$start_id -1]))
+        {
+            unset($this->blockChain[$start_id -1]);
+            $start_id++;
+        }
     }
 
 
-    public function getById(int $id) : ?Block
+    public function getById(int $id) : BlockNew|BlockExists|null
     {
-        foreach ($this->blockChain as $bl)
-        {
-            if ($bl->id == $id)
-            {
-                return $bl;
-            }
+        assert($id >= 0);
+        if (isset($this->blockChain[$id-1])) {
+            return $this->blockChain[$id-1];
         }
         return null;
     }
 
 
-    public function getByHash(string $hash) : ?Block
+    public function getByHash(string $hash) : BlockNew|BlockExists|null
     {
         foreach ($this->blockChain as $bl)
         {
@@ -46,26 +58,44 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
         return null;
     }
 
-    public function getFirst()  : ?Block
+    public function getFirst()  : BlockNew|BlockExists|null
     {
-
+        if (isset($this->blockChain[0]))
+        {
+            return $this->blockChain[0];
+        }
+        return null;
     }
 
-    public function getNext()  : ?Block
+    public function getNext(int $curr_id)  : BlockNew|BlockExists|null
     {
-
+        assert($curr_id >= 0);
+        return $this->getById($curr_id + 1);
     }
 
-    public function getPrev()  : ?Block
+    public function getPrev(int $curr_id)  : BlockNew|BlockExists|null
     {
-
+        assert($curr_id > 0);
+        return $this->getById($curr_id - 1);
     }
 
-    public function getLast()  : ?Block
+    public function getLast()  : BlockNew|BlockExists|null
     {
-
+        if (isset($this->blockChain[sizeof($this->blockChain) - 1]))
+        {
+            return $this->blockChain[sizeof($this->blockChain) - 1];
+        }
+        return null;
     }
 
+    public function getMaxId() : int
+    {
+        $last = $this->getLast();
+        if ($last) {
+            return $last->id;
+        }
+        return 0;
+    }
 
     /**
      * @param int $num
@@ -98,7 +128,7 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
         {
             foreach ($bl->transactions as $tr)
             {
-                if ($tr->form == $from)
+                if ($tr->from == $from)
                 {
                     $balance -= $tr->amount;
                 }
@@ -118,13 +148,6 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
     }
 
 
-//    public function validateNewTransactions(BlockChain $blockChain, array $transactions) : array
-//    {}
 
-    public function validateNewTransaction(BlockChain $blockChain, TransactionNew $transactionNew) : bool
-    {}
-
-    public function validateNewBlock(BlockChain $blockChain, BlockNew $blockNew) : bool
-    {}
 
 }

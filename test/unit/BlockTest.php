@@ -4,26 +4,35 @@ namespace Tests\Unit;
 
 require_once __DIR__ . '\..\..\vendor\autoload.php';
 
+use Domain\Factory\BlockNewFactory;
+use Domain\Factory\BlockMiningFactory;
 use PHPUnit\Framework\TestCase;
-use Domain\KeyMaster;
-use Domain\Sign;
+
 
 
 class BlockTest  extends TestCase
 {
-    public function create_new_block_test()
+    public function test_create_new_block()
     {
-        $bn = new BlockNew([
-            'id' => 1,
-            'prev_block_hash' => 0,
-            'created_at' => time(),
-            'transactions' => [],
-            'difficulty' => '0000f',
-            'private_key',
-            'is_mining' => true,
-            'mining_award' => 100
-        ]);
+
+        $bnf = new BlockNewFactory();
+
+        $bn = $bnf->produce();
+
+        $this->assertTrue($bn->verifyTransactions());
+        $this->assertTrue($bn->verifyHash());
+        $this->assertTrue($bn->verifyProof());
     }
 
+    public function test_create_new_mining_block()
+    {
 
+        $bnf = new BlockMiningFactory();
+
+        $bn = $bnf->produce();
+
+        $this->assertTrue($bn->verifyTransactions());
+        $this->assertTrue($bn->verifyHash());
+        $this->assertTrue($bn->verifyProof());
+    }
 }
