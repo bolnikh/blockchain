@@ -6,30 +6,28 @@ declare(strict_types=1);
 namespace Domain\Factory;
 
 use Domain\BlockNew;
-use Domain\TransactionMining;
-use Domain\TransactionNew;
 use Domain\KeyMaster;
-use Domain\TransactionString;
+
 
 class BlockNewFactory
 {
-    private array $key_list_from = [];
-    private int $key_list_from_size = 10;
+    protected array $key_list_from = [];
+    protected int $key_list_from_size = 10;
 
-    private array $key_list_to = [];
-    private int $key_list_to_size = 10;
+    protected array $key_list_to = [];
+    protected int $key_list_to_size = 10;
 
-    private array $transaction_list = [];
-    private int $transaction_list_size = 5;
+    protected array $transaction_list = [];
+    protected int $transaction_list_size = 5;
 
-    private int $id = 1;
-    private string $prev_block_hash = '0';
-    private array $transactions = [];
-    private string $difficulty = '000f';
+    protected int $id = 1;
+    protected string $prev_block_hash = '0';
+    protected array $transactions = [];
+    protected string $difficulty = '000f';
 
-    private string $mining_private_key;
-    private bool $is_mining = true;
-    private int $mining_award = 100;
+    protected string $mining_private_key;
+    protected bool $is_mining = true;
+    protected int $mining_award = 100;
 
 
 
@@ -49,7 +47,6 @@ class BlockNewFactory
         $km->generateKey();
 
         return [
-            'km' => $km,
             'private_key' => $km->getPrivateKey(),
             'public_key' => $km->getPublicKey(true),
         ];
@@ -74,7 +71,7 @@ class BlockNewFactory
     {
         $this->key_list_from = self::prepareKeyList($this->key_list_from_size);
         $this->key_list_to = self::prepareKeyList($this->key_list_to_size);
-        $this->mining_key = self::prepareKey();
+
 
         for ($i = 0; $i < $this->transaction_list_size; $i++)
         {
@@ -95,7 +92,7 @@ class BlockNewFactory
 
     }
 
-    private function prepare() : void
+    protected function prepare() : void
     {
         $this->prepareTransactionList();
 

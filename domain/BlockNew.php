@@ -30,12 +30,6 @@ class BlockNew extends BlockExists
         $this->transactions_hash = $this->getTransactionsHash();
         $this->hash = $this->calcHash();
 
-        if (!$this->findProof())
-        {
-            throw new BlockNewProofException('Cannot proof block');
-        }
-
-
     }
 
 
@@ -65,18 +59,8 @@ class BlockNew extends BlockExists
                 unset($this->transactions[$k]);
                 break;
             }
-            if (false === $this->checkBalance($tr))
-            {
-                unset($this->transactions[$k]);
-                break;
-            }
         }
         return true;
-    }
-
-    public function createBlock()
-    {
-        $tr_hash = $this->getTransactionsHash();
     }
 
     public function findProof($from = 0, $to = 1000000) : bool
@@ -89,5 +73,10 @@ class BlockNew extends BlockExists
             }
         }
         return false;
+    }
+
+    public function addTransaction(TransactionNew $tr) : void
+    {
+        $this->transactions[] = $tr;
     }
 }

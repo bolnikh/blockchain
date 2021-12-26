@@ -7,8 +7,9 @@ namespace Domain\Interfaces;
 
 use Domain\BlockNew;
 use Domain\BlockExists;
+use Iterator;
 
-interface BlockChainStorageInterface
+interface BlockChainStorageInterface extends Iterator, BlockChainBalanceInterface
 {
     public function store(BlockNew|BlockExists $block) : bool;
 
@@ -23,20 +24,20 @@ interface BlockChainStorageInterface
 
     /**
      * @param int $num
-     * @return Block[]
+     * @return BlockExists[]
      */
     public function getLastArr(int $num = 0) : array;
 
     /**
      * @param int $offset
      * @param int $limit
-     * @return Block[]
+     * @return BlockExists[]
      */
     public function getAll(int $offset = 0, int $limit = 30) : array;
 
 
 
 
-
+    public function balancePrevBlock(string $from, int $block_id): int;
 
 }

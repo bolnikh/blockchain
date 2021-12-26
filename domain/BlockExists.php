@@ -11,6 +11,9 @@ class BlockExists
     public string $prev_block_hash;
     public int $created_at;
     public string $transactions_hash;
+    /**
+     * @var TransactionExists[]|TransactionNew[]
+     */
     public array $transactions;
     public string $difficulty;
     public int $proof;
@@ -55,32 +58,17 @@ class BlockExists
     {
         foreach ($this->transactions as $tr)
         {
-            if (false === $tr->isValidForNewBlock()) {
-                return false;
-            }
-            if (false === $this->checkBalance($tr))
-            {
+            if (false === $tr->isValidForExistsBlock()) {
                 return false;
             }
         }
         return true;
     }
 
-    public function checkBalance(TransactionExists $tr) : bool
-    {
-        return true;
-    }
 
     public function verifyAllTransactions() : bool
     {
-        foreach ($this->transactions as $tr)
-        {
-            if (false === $this->verifyTransactions($tr))
-            {
-                return false;
-            }
-        }
-        return true;
+        return $this->verifyTransactions();
     }
 
     public function calcHash() : string
@@ -102,5 +90,48 @@ class BlockExists
     public function getHash() : string
     {
         return $this->hash;
+    }
+
+    public function nextBlockId()
+    {
+        return $this->id + 1;
+    }
+
+    public function checkMiningTransaction($useMining, $award = 100)
+    {
+        if ($useMining) {
+            if (sizeof($this->transactions) == 0)
+            {
+                return false; // должна быть хотя бы майнинг транзакция
+            }
+
+            $tr_0 = $this->transactions[0];
+            if (!$tr_0->isMining())
+            {
+                return false; // манинг транзакция должна быть первой
+            }
+            if ($tr_0->amount != $award)
+            {
+                return false; // манинг транзакция должна быть на верную сумму
+            }
+
+            for ($i = 1; $i < sizeof($this->transactions); $i++)
+            {
+                if ($this->transactions[$i]->isMining())
+                {
+                    return false; // дожна быть только одна майнинг транзакция
+                }
+            }
+        } else {
+            for ($i = 0; $i < sizeof($this->transactions); $i++)
+            {
+                if ($this->transactions[$i]->isMining())
+                {
+                    return false; // не должно быть майнинг транзакций
+                }
+            }
+        }
+
+        return true;
     }
 }

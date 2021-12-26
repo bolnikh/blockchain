@@ -24,6 +24,8 @@ class TransactionExists
         'from', 'to', 'amount', 'created_at', 'ttl', 'sign', 'hash', 'blockchained_at',
     ];
 
+    const MINING_FROM = '0';
+
     public function __construct($data = []) {
 
         foreach ($data as $k => $v) {
@@ -131,6 +133,6 @@ class TransactionExists
 
     public function isMining()
     {
-        return $this->from === '0';
+        return $this->from === TransactionExists::MINING_FROM;
     }
 }

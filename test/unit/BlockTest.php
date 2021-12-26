@@ -27,9 +27,9 @@ class BlockTest  extends TestCase
     public function test_create_new_mining_block()
     {
 
-        $bnf = new BlockMiningFactory();
+        $bmf = new BlockMiningFactory();
 
-        $bn = $bnf->produce();
+        $bn = $bmf->produce();
 
         $this->assertTrue($bn->verifyTransactions());
         $this->assertTrue($bn->verifyHash());

@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace Domain\Actions;
 
-use Domain\RunnableInterface;
+use Domain\Interfaces\RunnableInterface;
 use Domain\KeyMaster;
 
 

@@ -5,12 +5,11 @@ declare(strict_types=1);
 
 namespace Domain\Factory;
 
-use \Domain\Factory\BlockNewFactory;
 
 
 class BlockMiningFactory extends BlockNewFactory
 {
-    private function prepare() : void
+    protected function prepare() : void
     {
         if (empty($this->mining_private_key))
         {

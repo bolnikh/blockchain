@@ -10,14 +10,14 @@ use Domain\KeyMaster;
 
 class TransactionNewFactory
 {
-    private string $private_key_from;
-    private string $to;
-    private int $amount;
-    private int $created_at;
-    private int $ttl;
+    public string $private_key_from;
+    public string $to;
+    public int $amount;
+    public int $created_at;
+    public int $ttl;
 
-    private $km_from;
-    private $km_to;
+    public $km_from;
+    public $km_to;
 
     public function __set($key, $val)
     {

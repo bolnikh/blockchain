@@ -12,7 +12,7 @@ class TransactionMining extends TransactionExists
     public function __construct($data)
     {
         $this->km = new KeyMaster($data['private_key']);
-        $this->from = '0';
+        $this->from = TransactionExists::MINING_FROM;
         $this->to = $this->km->getPublicKey(true);
         $this->amount = $data['amount'];
         $this->created_at = time();

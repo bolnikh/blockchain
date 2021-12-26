@@ -7,7 +7,6 @@ require_once __DIR__ . '\..\..\vendor\autoload.php';
 use Domain\Storages\BlockChainStorageMemory;
 use Domain\BlockNew;
 use Domain\Factory\BlockNewFactory;
-use Domain\Factory\BlockMiningFactory;
 use Domain\TransactionNew;
 use PHPUnit\Framework\TestCase;
 
@@ -98,6 +97,22 @@ class BlockChainTest extends TestCase
 
         $this->assertEquals($mining_award + $mining_award / 5, $bsm->balance($key_list[1]['public_key']));
         $this->assertEquals($mining_award / 10, $bsm->balance($key_list[2]['public_key']));
+
+
+        $this->assertEquals($mining_award, $bsm->balance($key_list[0]['public_key'], 1));
+        $this->assertEquals($mining_award * 2, $bsm->balance($key_list[0]['public_key'], 2));
+        $this->assertEquals($mining_award * 2 - $mining_award / 5 - $mining_award / 10, $bsm->balance($key_list[0]['public_key'], 3));
+
+        $this->assertEquals(0, $bsm->balance($key_list[1]['public_key'], 1));
+        $this->assertEquals(0, $bsm->balance($key_list[1]['public_key'], 2));
+        $this->assertEquals($mining_award + $mining_award / 5, $bsm->balance($key_list[1]['public_key'], 3));
+
+        $this->assertEquals(0, $bsm->balance($key_list[2]['public_key'], 1));
+        $this->assertEquals(0, $bsm->balance($key_list[2]['public_key'], 2));
+        $this->assertEquals($mining_award / 10, $bsm->balance($key_list[2]['public_key'], 3));
+
+
+        //---------------
 
 
 
