@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Domain;
 
+use Domain\Exceptions\KeyMasterException;
+
 class KeyMaster
 {
     private \OpenSSLAsymmetricKey|false $key;

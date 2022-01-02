@@ -79,4 +79,15 @@ class BlockNew extends BlockExists
     {
         $this->transactions[] = $tr;
     }
+
+    public function verifyTransactions() : bool
+    {
+        foreach ($this->transactions as $tr)
+        {
+            if (false === $tr->isValidForNewBlock()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

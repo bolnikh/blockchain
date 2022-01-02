@@ -134,4 +134,12 @@ class BlockExists
 
         return true;
     }
+
+    public function verifyBlock()
+    {
+        return $this->verifyProof()
+            && $this->verifyTransactionsHash()
+            && $this->verifyTransactions()
+            && $this->verifyHash();
+    }
 }

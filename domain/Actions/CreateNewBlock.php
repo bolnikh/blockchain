@@ -6,7 +6,17 @@ namespace Domain\Actions;
 
 use Domain\Interfaces\RunnableInterface;
 
-
+/**
+ * Class CreateNewBlock
+ *
+ * create new block for blockchain
+ * collect transactions
+ * store them into block
+ * produce block
+ * store it to blockchain
+ *
+ * @package Domain\Actions
+ */
 class CreateNewBlock implements RunnableInterface
 {
 

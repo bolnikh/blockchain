@@ -4,5 +4,6 @@
       "App\\": "app/",
       "Domain\\": "domain/"
     }
-  }
+  },
+  "require": { "php": ">=8.0", "ext-openssl": "*", "ext-json": "*" }
 }

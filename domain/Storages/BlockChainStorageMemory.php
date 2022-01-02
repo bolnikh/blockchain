@@ -25,20 +25,9 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
         $this->blockChain = $blockChain;
     }
 
-    public function store(BlockNew|BlockExists $block) : bool
+    public function store(BlockNew|BlockExists $block) : void
     {
         $this->blockChain[$block->id - 1] = $block;
-        return true;
-    }
-
-    public function emptyTail(int $start_id) : void
-    {
-        assert($start_id >= 0);
-        while (isset($this->blockChain[$start_id -1]))
-        {
-            unset($this->blockChain[$start_id -1]);
-            $start_id++;
-        }
     }
 
 
@@ -52,17 +41,6 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
     }
 
 
-    public function getByHash(string $hash) : BlockNew|BlockExists|null
-    {
-        foreach ($this->blockChain as $bl)
-        {
-            if ($bl->hash == $hash)
-            {
-                return $bl;
-            }
-        }
-        return null;
-    }
 
     public function getFirst()  : BlockNew|BlockExists|null
     {
@@ -196,10 +174,4 @@ class BlockChainStorageMemory implements BlockChainStorageInterface
     }
 
 
-}
-
-
-function dd($var){
-    var_dump($var);
-    die();
 }

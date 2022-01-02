@@ -11,13 +11,12 @@ use Iterator;
 
 interface BlockChainStorageInterface extends Iterator, BlockChainBalanceInterface
 {
-    public function store(BlockNew|BlockExists $block) : bool;
+    public function store(BlockNew|BlockExists $block) : void;
 
 
     public function getById(int $id) : BlockNew|BlockExists|null;
 
 
-    public function getByHash(string $hash) : BlockNew|BlockExists|null;
 
     public function getMaxId() : int;
 

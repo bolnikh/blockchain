@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Domain;
 
+use Domain\Exceptions\KeyMasterException;
+
 /**
  * Class Sign
  * проверка подписи текста по сигнатуре и публичному ключу

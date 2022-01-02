@@ -33,7 +33,6 @@ class BlockChainTest extends TestCase
 
         $bsm->store($nb1);
         $this->assertEquals($nb1, $bsm->getById(1));
-        $this->assertEquals($nb1, $bsm->getByHash($nb1->getHash()));
         $this->assertEquals($mining_award, $bsm->balance($key_list[0]['public_key']));
 
 
@@ -50,7 +49,6 @@ class BlockChainTest extends TestCase
 
         $bsm->store($nb2);
         $this->assertEquals($nb2, $bsm->getById(2));
-        $this->assertEquals($nb2, $bsm->getByHash($nb2->getHash()));
 
         $this->assertEquals($nb1, $bsm->getFirst());
         $this->assertEquals($nb2, $bsm->getLast());
@@ -87,7 +85,6 @@ class BlockChainTest extends TestCase
 
         $bsm->store($nb3);
         $this->assertEquals($nb3, $bsm->getById(3));
-        $this->assertEquals($nb3, $bsm->getByHash($nb3->getHash()));
 
 
         $this->assertEquals($mining_award * 2
