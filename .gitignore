@@ -1,5 +1,5 @@
 .idea
-/storage/log
+/storage
 
 /vendor
 .env
