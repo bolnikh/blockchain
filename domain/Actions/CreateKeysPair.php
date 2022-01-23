@@ -29,9 +29,9 @@ class CreateKeysPair implements RunnableInterface
         $this->publicKey = $this->keyMaster->getPublicKey();
     }
 
-    public function getPrivateKey(bool $oneLine = true) : string
+    public function getPrivateKey() : string
     {
-        return $oneLine ? $this->keyMaster->makeOneLineKey($this->privateKey) : $this->privateKey;
+        return $this->privateKey;
     }
 
     public function getPublicKey(bool $oneLine = true) : string

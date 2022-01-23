@@ -6,22 +6,23 @@ declare(strict_types=1);
 namespace Domain\Storages;
 
 
+use App\Interfaces\ServiceInterface;
 use Domain\BlockExists;
 use Domain\BlockNew;
 use Domain\Interfaces\BlockChainStorageInterface;
 use Domain\TransactionExists;
 
 
-class BlockChainStorageFile implements BlockChainStorageInterface
+class BlockChainStorageFile implements BlockChainStorageInterface, ServiceInterface
 {
     private int $position = 0;
-    //private array $blockChain = [];
+
 
     private $storageDir = __DIR__.'/../../storage/files/';
 
     public function __construct() {
         $this->position = 0;
-        //$this->maxBlockIdFileName = $this->storageDir.'MaxBlockId.txt';
+
     }
 
 
@@ -95,7 +96,7 @@ class BlockChainStorageFile implements BlockChainStorageInterface
 
     public function getMaxId() : int
     {
-        $files = scandir($this->storageDir);
+        $files = scandir($this->storageDir.'blocks/');
         $max_id = 0;
 
         foreach ($files as $file)

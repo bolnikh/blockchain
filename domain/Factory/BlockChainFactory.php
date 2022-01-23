@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Domain\Factory;
 
+use Domain\BlockExists;
 use Domain\BlockNew;
 use Domain\Storages\BlockChainStorageMemory;
 use Domain\TransactionNew;
@@ -103,7 +104,7 @@ class BlockChainFactory
 
         $bl = new BlockNew([
             'id' => $lastBlock ? $lastBlock->nextBlockId() : 1,
-            'prev_block_hash' => $lastBlock ? $lastBlock->hash : '0',
+            'prev_block_hash' => $lastBlock ? $lastBlock->hash : BlockExists::EmptyPrevBlockHash,
             'transactions' => $this->transactions,
             'difficulty' => $this->difficulty,
             'is_mining' => $this->is_mining,

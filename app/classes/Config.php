@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace App\Classes;
 
+use App\Interfaces\ServiceInterface;
 
-
-class Config
+class Config implements ServiceInterface
 {
     public bool $is_mining = true;
     public int $mining_award = 1000;
+    public string $difficulty = '000f';
 
     public int $transaction_default_ttl = 3600 * 3;
 
@@ -25,23 +26,17 @@ class Config
     public string $coinname = 'phpcoin';
     public string $version = '0.01';
 
-    public string $node_private_key = <<<EOD
------BEGIN PRIVATE KEY-----
-MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEApKWOrEMfKjlDMGsJ
-aJC2kniyGBf9vnJzr7t16N5kYpwccVk/pB2edl3GY8ASxKv0ZMHQL4gz5XIYB/VA
-RYONgwIDAQABAkBkN42fVv/aQJ6gExbX+fXXM/Ybakb+LEY0eiNsCioKRserYpr1
-sNQKxQToQweWw2j9gV/WWfTa7+BCkDjl69NJAiEAz2vYarqwbQ9YDdJfytPtxFrp
-ITgHP5iCaYT05zSkD4UCIQDLNR6GwfxrkRNkbSf83rW0j2RZ+bGDnDGm9kGfpqPD
-ZwIgGee1Mrc4O5az/53rmtBXHLPh8+UkepvYhcc2Mv4PE2UCIDwj6HjxiIc9VIPw
-WllYgGaD2atXXtYYsAk98IYTh3wZAiAoDglngefcbV1K5bZlNXHjtKkRiCTOitrM
-+TafjD0iJQ==
------END PRIVATE KEY-----
-EOD;
+    public string $node_private_key = '';
+    public string $node_private_key_file = __DIR__.'/../../storage/keys/default_node_private.key';
+
+
+    public $storage = 'file'; // memory | file | db
 
     public function __construct() {
         // load env before (class DotEnv)
 
-        $env_filename = __DIR__ . '/../../.env';
+        $path_to_env =  __DIR__ . '/../../';
+        $env_filename = $path_to_env . '.env';
         if (!file_exists($env_filename)) {
             return;
         }
@@ -49,11 +44,18 @@ EOD;
 
         $this->is_mining = boolval(self::env('is_mining', $this->is_mining));
         $this->mining_award = intval(self::env('mining_award', $this->mining_award));
+        $this->difficulty = strval(self::env('difficulty', $this->difficulty));
         $this->transaction_default_ttl = intval(self::env('transaction_default_ttl', $this->transaction_default_ttl));
         $this->default_nodes = self::env('default_nodes') ? explode(',', self::env('default_nodes')) : $this->default_nodes;
         $this->coinname = strval(self::env('coinname', $this->coinname));
         $this->version = strval(self::env('version', $this->version));
-        $this->node_private_key = strval(self::env('node_private_key', $this->node_private_key));
+        $this->node_private_key_file = strval(self::env('node_private_key_file', $this->node_private_key_file));
+        if (strpos($this->node_private_key_file, '__PATH_TO_ENV__') !== false)
+        {
+            $this->node_private_key_file = str_replace('__PATH_TO_ENV__', $path_to_env, $this->node_private_key_file);
+        }
+        $this->node_private_key = file_get_contents($this->node_private_key_file);
+        $this->storage = strval(self::env('storage', $this->storage));
     }
 
     public static function env(string $key, string|bool|int|null $default = null) : string|bool|int|null

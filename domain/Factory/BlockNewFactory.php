@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Domain\Factory;
 
+use Domain\BlockExists;
 use Domain\BlockNew;
 use Domain\KeyMaster;
 
@@ -21,7 +22,7 @@ class BlockNewFactory
     protected int $transaction_list_size = 5;
 
     protected int $id = 1;
-    protected string $prev_block_hash = '0';
+    protected string $prev_block_hash = BlockExists::EmptyPrevBlockHash;
     protected array $transactions = [];
     protected string $difficulty = '000f';
 

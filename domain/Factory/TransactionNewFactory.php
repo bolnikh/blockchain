@@ -78,4 +78,15 @@ class TransactionNewFactory
     {
         return $this->km_to;
     }
+
+    public function reset() : self
+    {
+        $this->private_key_from = '';
+        $this->to = '';
+        $this->amount = 0;
+        $this->created_at = 0;
+        $this->ttl = 0;
+
+        return $this;
+    }
 }

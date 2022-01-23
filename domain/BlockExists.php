@@ -6,6 +6,8 @@ namespace Domain;
 
 class BlockExists
 {
+    const EmptyPrevBlockHash = '0';
+
     public int $id;
     public string $hash;
     public string $prev_block_hash;

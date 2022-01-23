@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 require_once __DIR__ . '\..\..\vendor\autoload.php';
 
+use Domain\BlockExists;
 use Domain\Storages\BlockChainStorageMemory;
 use Domain\BlockNew;
 use Domain\Factory\BlockNewFactory;
@@ -23,7 +24,7 @@ class BlockChainTest extends TestCase
 
         $nb1 = new BlockNew([
             'id' => 1,
-            'prev_block_hash' => '0',
+            'prev_block_hash' => BlockExists::EmptyPrevBlockHash,
             'transactions' => [],
             'difficulty' => $difficulty,
             'is_mining' => $is_mining,
