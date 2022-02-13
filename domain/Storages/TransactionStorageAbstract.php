@@ -5,9 +5,10 @@ declare(strict_types=1);
 
 namespace Domain\Storages;
 
+use App\Interfaces\ServiceInterface;
 use Domain\Interfaces\TransactionStorageInterface;
 
-abstract class TransactionStorageAbstract implements TransactionStorageInterface
+abstract class TransactionStorageAbstract implements TransactionStorageInterface, ServiceInterface
 {
     public function deleteAllByTtl(): void
     {

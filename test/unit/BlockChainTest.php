@@ -112,7 +112,85 @@ class BlockChainTest extends TestCase
 
         //---------------
 
+    }
 
+
+    public function test_has_trx()
+    {
+        $difficulty = '0f';
+        $is_mining = true;
+        $mining_award = 100;
+
+        $key_list = BlockNewFactory::prepareKeyList(10);
+        $bsm = new BlockChainStorageMemory();
+
+        $nb1 = new BlockNew([
+            'id' => 1,
+            'prev_block_hash' => BlockExists::EmptyPrevBlockHash,
+            'transactions' => [],
+            'difficulty' => $difficulty,
+            'is_mining' => $is_mining,
+            'mining_private_key' => $key_list[0]['private_key'],
+            'mining_award' => $mining_award,
+        ]);
+
+        $bsm->store($nb1);
+
+
+        foreach ($nb1->transactions as $tr) {
+            $this->assertTrue($bsm->isTrxUsed($tr->hash));
+            $this->assertFalse($bsm->isTrxUsed($tr->hash.'1'));
+        }
+
+        $nb2 = new BlockNew([
+            'id' => 2,
+            'prev_block_hash' => $nb1->getHash(),
+            'transactions' => [],
+            'difficulty' => $difficulty,
+            'is_mining' => $is_mining,
+            'mining_private_key' => $key_list[0]['private_key'],
+            'mining_award' => $mining_award,
+        ]);
+
+        $bsm->store($nb2);
+
+        foreach ($nb2->transactions as $tr) {
+            $this->assertTrue($bsm->isTrxUsed($tr->hash));
+            $this->assertFalse($bsm->isTrxUsed($tr->hash.'1'));
+        }
+
+        $tn1 = new TransactionNew([
+            'private_key' => $key_list[0]['private_key'],
+            'to' => $key_list[1]['public_key'],
+            'amount' => $mining_award / 5,
+        ]);
+
+        $tn2 = new TransactionNew([
+            'private_key' => $key_list[0]['private_key'],
+            'to' => $key_list[2]['public_key'],
+            'amount' => $mining_award / 10,
+        ]);
+
+        $nb3 = new BlockNew([
+            'id' => 3,
+            'prev_block_hash' => $nb2->getHash(),
+            'transactions' => [
+                $tn1, $tn2
+            ],
+            'difficulty' => $difficulty,
+            'is_mining' => $is_mining,
+            'mining_private_key' => $key_list[1]['private_key'],
+            'mining_award' => $mining_award,
+        ]);
+
+        $bsm->store($nb3);
+
+
+        $this->assertTrue($bsm->isTrxUsed($tn1->hash));
+        $this->assertFalse($bsm->isTrxUsed($tn1->hash.'1'));
+
+        $this->assertTrue($bsm->isTrxUsed($tn2->hash));
+        $this->assertFalse($bsm->isTrxUsed($tn2->hash.'1'));
 
     }
 }

@@ -98,16 +98,6 @@ class TransactionTest extends TestCase
         $this->assertTrue($te->verifySign());
     }
 
-    public function test_verifyBlockchainedAt()
-    {
-        $te = $this->createTransactionExists();
-        $te->blockchained_at = time() + 50;
-
-        $this->assertTrue($te->verifyBlockchainedAt());
-
-        $te->blockchained_at = time() + 500000;
-        $this->assertFalse($te->verifyBlockchainedAt());
-    }
 
     public function test_timeToSingBlock()
     {

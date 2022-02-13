@@ -35,4 +35,18 @@ class BlockTest  extends TestCase
         $this->assertTrue($bn->verifyHash());
         $this->assertTrue($bn->verifyProof());
     }
+
+    public function test_block_has_trx()
+    {
+
+        $bnf = new BlockNewFactory();
+
+        $bn = $bnf->produce();
+
+        foreach ($bn->transactions as $tr)
+        {
+            $this->assertTrue($bn->hasTrx($tr->hash));
+            $this->assertFalse($bn->hasTrx($tr->hash.'1'));
+        }
+    }
 }

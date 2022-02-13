@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Domain\Storages;
 
+use App\Interfaces\ServiceInterface;
 use Domain\Interfaces\NodeStorageInterface;
 
-abstract class NodeStorageAbstract implements NodeStorageInterface
+abstract class NodeStorageAbstract implements NodeStorageInterface, ServiceInterface
 {
     public function deleteAll(string $iAmSure): void
     {

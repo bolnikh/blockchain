@@ -4,13 +4,14 @@ declare(strict_types = 1);
 
 namespace App\Classes;
 
-use OutOfRangeException;
 use InvalidArgumentException;
 use App\Interfaces\ServiceInterface as Service;
 
 
 class ServiceLocator
 {
+    private static self $instance;
+
     /**
      * @var string[][]
      */
@@ -21,51 +22,55 @@ class ServiceLocator
      */
     private array $instantiated = [];
 
-    public function addInstance(string $class, Service $service)
-    {
-        $this->instantiated[$class] = $service;
+    public static function instance() : self {
+        if (empty(self::$instance)) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
-    public function addClass(string $class, array $params)
-    {
-        $this->services[$class] = $params;
+    private function __construct() {}
+    private function __clone(): void {}
+    public function __wakeup(): void {
+        throw new \Exception("Cannot unserialize a singleton.");
     }
 
-    public function has(string $interface): bool
+
+    public function addInstance(string $name, Service $service)
     {
-        return isset($this->services[$interface]) || isset($this->instantiated[$interface]);
+        $this->instantiated[$name] = $service;
     }
 
-    public function get(string $class): Service
+    public function addClass(string $name, string $class, array $params = [])
     {
-        if (isset($this->instantiated[$class])) {
-            return $this->instantiated[$class];
+        array_unshift($params, $class);
+        $this->services[$name] = $params;
+    }
+
+    public function has(string $name): bool
+    {
+        return isset($this->services[$name]) || isset($this->instantiated[$name]);
+    }
+
+    public function get(string $name): Service
+    {
+        if (isset($this->instantiated[$name])) {
+            return $this->instantiated[$name];
         }
 
-        $args = $this->services[$class];
-
-        switch (count($args)) {
-            case 0:
-                $object = new $class();
-                break;
-            case 1:
-                $object = new $class($args[0]);
-                break;
-            case 2:
-                $object = new $class($args[0], $args[1]);
-                break;
-            case 3:
-                $object = new $class($args[0], $args[1], $args[2]);
-                break;
-            default:
-                throw new OutOfRangeException('Too many arguments given');
+        if (!isset($this->services[$name])) {
+            throw new \Exception('Bad service name:'.$name);
         }
+
+        $args = $this->services[$name];
+        $class = array_shift($args);
+        $object = new $class(...$args);
 
         if (!$object instanceof Service) {
             throw new InvalidArgumentException('Could not register service: is no instance of Service');
         }
 
-        $this->instantiated[$class] = $object;
+        $this->instantiated[$name] = $object;
 
         return $object;
     }

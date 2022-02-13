@@ -1,10 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Classes;
 
 use App\Interfaces\ServiceInterface;
+use Domain\KeyMaster;
 
 class Config implements ServiceInterface
 {
@@ -29,10 +30,12 @@ class Config implements ServiceInterface
     public string $node_private_key = '';
     public string $node_private_key_file = __DIR__.'/../../storage/keys/default_node_private.key';
 
+    public string $node_public_key = '';
 
-    public $storage = 'file'; // memory | file | db
+    public $storage_type = 'file'; // memory | file | db
 
-    public function __construct() {
+    public function __construct()
+    {
         // load env before (class DotEnv)
 
         $path_to_env =  __DIR__ . '/../../';
@@ -50,15 +53,16 @@ class Config implements ServiceInterface
         $this->coinname = strval(self::env('coinname', $this->coinname));
         $this->version = strval(self::env('version', $this->version));
         $this->node_private_key_file = strval(self::env('node_private_key_file', $this->node_private_key_file));
-        if (strpos($this->node_private_key_file, '__PATH_TO_ENV__') !== false)
-        {
+        if (strpos($this->node_private_key_file, '__PATH_TO_ENV__') !== false) {
             $this->node_private_key_file = str_replace('__PATH_TO_ENV__', $path_to_env, $this->node_private_key_file);
         }
         $this->node_private_key = file_get_contents($this->node_private_key_file);
-        $this->storage = strval(self::env('storage', $this->storage));
+        $km = new KeyMaster($this->node_private_key);
+        $this->node_public_key = $km->getPublicKey(true);
+        $this->storage_type = strval(self::env('storage_type', $this->storage_type));
     }
 
-    public static function env(string $key, string|bool|int|null $default = null) : string|bool|int|null
+    public static function env(string $key, string|bool|int|null $default = null): string|bool|int|null
     {
         return getenv($key) !== false ? getenv($key) : $default;
     }

@@ -21,9 +21,9 @@ use Domain\Interfaces\BlockChainStorageInterface;
  *
  * @package Domain\Storages
  */
-class BlockChainStorageUnion  implements BlockChainStorageInterface
+class BlockChainStorageUnion  extends BlockChainStorageAbstract
 {
-    private int $position = 0;
+
 
     // последний совпадающий ид в $bs и $newBlocks
     private int $lastBsId;
@@ -36,7 +36,7 @@ class BlockChainStorageUnion  implements BlockChainStorageInterface
         private BlockChainStorageInterface $bs,
         private array $newBlocks
     ) {
-
+        parent::__construct();
     }
 
     public function init()
@@ -183,106 +183,7 @@ class BlockChainStorageUnion  implements BlockChainStorageInterface
 
 
 
-    /**
-     * @param int $num
-     * @return BlockExists[]
-     */
-    public function getLastArr(int $num = 0) : array
-    {
-        if ($num == 0) {
-            return [$this->getLast()];
-        } else {
-            $max_id = $this->getMaxId();
-            $arr = [];
-            for ($i = $max_id - $num; $i <= $max_id; $i++)
-            {
-                $arr[] = $this->getById($i);
-            }
-            return $arr;
-        }
-    }
-
-    /**
-     * @param int $offset
-     * @param int $limit
-     * @return BlockExists[]
-     */
-    public function getAll(int $offset = 0, int $limit = 30) : array
-    {
-        assert($offset >= 0);
-        assert($limit > 0);
-
-        $max_id = $this->getMaxId();
-        $arr = [];
-        for ($i = $offset; $i <= min($offset + $limit, $max_id); $i++)
-        {
-            $arr[] = $this->getById($i);
-        }
-        return $arr;
-    }
-
-    public function balance(string $from, int $block_id = 0): int
-    {
-        assert($block_id >= 0);
-
-        $balance = 0;
-        $max_id = $block_id ?: $this->getMaxId();
-
-        for ($i = 1; $i <= $max_id; $i++)
-        {
-            $bl = $this->getById($i);
-
-            if ($block_id > 0 && $bl->id > $block_id)
-            {
-                break;
-            }
-            foreach ($bl->transactions as $tr)
-            {
-                if ($tr->from == $from)
-                {
-                    $balance -= $tr->amount;
-                }
-                if ($tr->to == $from)
-                {
-                    $balance += $tr->amount;
-                }
-            }
-        }
 
 
-        return $balance;
-    }
 
-    public function balancePrevBlock(string $from, int $block_id): int
-    {
-        assert($block_id >= 0);
-
-        if ($block_id <= 1)
-        {
-            return 0;
-        }
-
-        return $this->balance($from, $block_id - 1);
-    }
-
-
-    public function rewind() : void {
-        $this->position = 0;
-    }
-
-    public function current() : mixed {
-        return $this->getById($this->position + 1);
-    }
-
-    public function key() : mixed {
-        return $this->position;
-    }
-
-    public function next() : void  {
-        ++$this->position;
-    }
-
-    public function valid() : bool {
-        return $this->position + 1 <= $this->getMaxId();
-    }
 }

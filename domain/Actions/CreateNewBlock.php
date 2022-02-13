@@ -30,8 +30,8 @@ class CreateNewBlock implements RunnableInterface
         private ServiceLocator $service
     )
     {
-        $this->storage = $this->service->get('storage');
-        $this->config = $this->service->get('config');
+        $this->storage = $this->service->get('BlockChainStorage');
+        $this->config = $this->service->get('Config');
     }
 
 

@@ -16,12 +16,11 @@ class TransactionExists
     public int $amount;
     public int $created_at = 0;
     public int $ttl = 24*3600;
-    public int $blockchained_at = 0; // время создания блок с этой транзакцией
     public string $sign;
     public string $hash;
 
     protected $fillable = [
-        'from', 'to', 'amount', 'created_at', 'ttl', 'sign', 'hash', 'blockchained_at',
+        'from', 'to', 'amount', 'created_at', 'ttl', 'sign', 'hash',
     ];
 
     const MINING_FROM = '0';
@@ -85,10 +84,6 @@ class TransactionExists
         return $this->created_at + $this->ttl >= time();
     }
 
-    public function verifyBlockchainedAt() : bool
-    {
-        return $this->created_at + $this->ttl >= $this->blockchained_at;
-    }
 
     public function isBaseValid() : bool
     {
@@ -101,7 +96,7 @@ class TransactionExists
      */
     public function isValidForExistsBlock() : bool
     {
-        return $this->verifyBlockchainedAt() && $this->isBaseValid();
+        return $this->isBaseValid();
     }
 
     /**

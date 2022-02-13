@@ -144,4 +144,15 @@ class BlockExists
             && $this->verifyTransactions()
             && $this->verifyHash();
     }
+
+    public function hasTrx(string $trxHash) : bool
+    {
+        foreach ($this->transactions as $tr)
+        {
+            if ($tr->hash === $trxHash) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

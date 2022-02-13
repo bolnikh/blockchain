@@ -9,19 +9,16 @@ namespace Domain\Storages;
 use App\Interfaces\ServiceInterface;
 use Domain\BlockExists;
 use Domain\BlockNew;
-use Domain\Interfaces\BlockChainStorageInterface;
 use Domain\TransactionExists;
 
 
-class BlockChainStorageFile implements BlockChainStorageInterface, ServiceInterface
+class BlockChainStorageFile  extends BlockChainStorageAbstract implements ServiceInterface
 {
-    private int $position = 0;
-
 
     private $storageDir = __DIR__.'/../../storage/files/';
 
     public function __construct() {
-        $this->position = 0;
+        parent::__construct();
 
     }
 
@@ -72,27 +69,6 @@ class BlockChainStorageFile implements BlockChainStorageInterface, ServiceInterf
 
 
 
-    public function getFirst()  : BlockNew|BlockExists|null
-    {
-        return $this->getById(1);
-    }
-
-    public function getNext(int $curr_id)  : BlockNew|BlockExists|null
-    {
-        assert($curr_id >= 0);
-        return $this->getById($curr_id + 1);
-    }
-
-    public function getPrev(int $curr_id)  : BlockNew|BlockExists|null
-    {
-        assert($curr_id > 0);
-        return $this->getById($curr_id - 1);
-    }
-
-    public function getLast()  : BlockNew|BlockExists|null
-    {
-        return $this->getById($this->getMaxId());
-    }
 
     public function getMaxId() : int
     {
@@ -110,133 +86,9 @@ class BlockChainStorageFile implements BlockChainStorageInterface, ServiceInterf
         return $max_id;
     }
 
-//    public function sizeof() {
-//        return sizeof($this->blockChain);
-//    }
-
-    /**
-     * @param int $num
-     * @return BlockExists[]
-     */
-    public function getLastArr(int $num = 0) : array
-    {
-        if ($num == 0) {
-            return [$this->getLast()];
-        } else {
-            $arr = [];
-            $max_id = $this->getMaxId();
-            if ($max_id == 0)
-            {
-                return[];
-            }
-            if ($max_id < $num)
-            {
-                $start = 1;
-                $end = $max_id;
-            } else {
-                $start = $max_id - $num;
-                $end = $max_id;
-            }
-            for ($i = $start; $i < $end; $i++)
-            {
-                $arr[] = $this->getById($i);
-            }
-
-            return $arr;
-        }
-    }
-
-    /**
-     * @param int $offset
-     * @param int $limit
-     * @return BlockExists[]
-     */
-    public function getAll(int $offset = 0, int $limit = 30) : array
-    {
-        assert($offset >= 0);
-        assert($limit > 0);
-
-        if ($offset == 0)
-        {
-            $offset = 1;
-        }
-
-        $max_id = $this->getMaxId();
-        if ($offset > $max_id)
-        {
-            return [];
-        }
-        $end = min($max_id, $offset + $limit);
-
-        $arr = [];
-        for ($i = $offset; $i <= $end; $i++)
-        {
-            $arr[] = $this->getById($i);
-        }
-
-        return $arr;
-    }
-
-    public function balance(string $from, int $block_id = 0): int
-    {
-        assert($block_id >= 0);
-
-        $balance = 0;
-
-        foreach ($this as $bl)
-        {
-            if ($block_id > 0 && $bl->id > $block_id)
-            {
-                break;
-            }
-            foreach ($bl->transactions as $tr)
-            {
-                if ($tr->from == $from)
-                {
-                    $balance -= $tr->amount;
-                }
-                if ($tr->to == $from)
-                {
-                    $balance += $tr->amount;
-                }
-            }
-        }
-
-        return $balance;
-    }
-
-    public function balancePrevBlock(string $from, int $block_id): int
-    {
-        assert($block_id >= 0);
-
-        if ($block_id <= 1)
-        {
-            return 0;
-        }
-
-        return $this->balance($from, $block_id - 1);
-    }
 
 
 
-    public function rewind() {
-        $this->position = 1;
-    }
 
-    public function current() {
-        return $this->getById($this->position);
-    }
-
-    public function key() {
-        return $this->position;
-    }
-
-    public function next() {
-        ++$this->position;
-    }
-
-    public function valid() {
-        return $this->position <= $this->getMaxId();
-    }
 
 }

@@ -39,4 +39,6 @@ interface BlockChainStorageInterface extends Iterator, BlockChainBalanceInterfac
 
     public function balancePrevBlock(string $from, int $block_id): int;
 
+    public function isTrxUsed(string $hash, int $before_block_id = 0) : bool;
+
 }
