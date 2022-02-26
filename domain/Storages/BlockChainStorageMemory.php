@@ -45,6 +45,12 @@ class BlockChainStorageMemory extends BlockChainStorageAbstract
         return sizeof($this->blockChain);
     }
 
-
+    public function delete(int $block_id) : void
+    {
+        assert($block_id > 0);
+        if (isset($this->blockChain[$block_id-1])) {
+            unset($this->blockChain[$block_id-1]);
+        }
+    }
 
 }

@@ -6,11 +6,13 @@ declare(strict_types=1);
 namespace Domain\Interfaces;
 
 
+use Domain\Node;
+
 interface NodeStorageInterface
 {
-    public function store(string $node) : void;
+    public function store(Node $node) : void;
 
-    public function getList() : array;
+    public function getList(bool $active = true) : array;
 
-    public function delete(string $node) : void;
+    public function delete(Node $node) : void;
 }

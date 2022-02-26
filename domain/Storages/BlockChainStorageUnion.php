@@ -183,7 +183,10 @@ class BlockChainStorageUnion  extends BlockChainStorageAbstract
 
 
 
-
+    public function delete(int $block_id) : void
+    {
+        // not used
+    }
 
 
 }

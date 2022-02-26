@@ -31,6 +31,7 @@ class CreateNewBlock implements RunnableInterface
     )
     {
         $this->storage = $this->service->get('BlockChainStorage');
+        $this->newStorage = $this->service->get('BlockChainNewStorage');
         $this->config = $this->service->get('Config');
     }
 
@@ -58,5 +59,6 @@ class CreateNewBlock implements RunnableInterface
 
         // сохраняем его
         $this->storage->store($bl);
+        $this->newStorage->store($bl); // для рассылки
     }
 }

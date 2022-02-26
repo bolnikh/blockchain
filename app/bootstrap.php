@@ -16,6 +16,12 @@ if ($config->storage_type == 'file') {
     $service->addClass('BlockChainStorage', BlockChainStorageFile::class);
     $service->addClass('TrxStorage', TransactionStorageFile::class);
     $service->addClass('NodeStorage', NodeStorageFile::class);
+
+    $blockChainNewStorage = new BlockChainStorageFile(ROOT_DIR.'/storage/files/blocks_new/');
+    $service->addInstance('BlockChainNewStorage', $blockChainNewStorage);
+
+    $newTrxStorage = new TransactionStorageFile(ROOT_DIR.'/storage/files/transactions_new/');
+    $service->addInstance('NewTrxStorage', $newTrxStorage);
 } else {
     throw new Exception('bad storage_type');
 }

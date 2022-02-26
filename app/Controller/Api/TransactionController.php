@@ -21,6 +21,7 @@ class TransactionController
     public function __construct()
     {
         $this->trxStorage = ServiceLocator::instance()->get('TrxStorage');
+        $this->newTrxStorage = ServiceLocator::instance()->get('NewTrxStorage');
         $this->blockChainStorage = ServiceLocator::instance()->get('BlockChainStorage');
     }
 
@@ -56,5 +57,11 @@ class TransactionController
     public function action_get_trx(array $params) : TransactionExists
     {
         return $this->trxStorage->get($params['trx_hash']);
+    }
+
+    public function action_get_new_trxs() : array
+    {
+
+
     }
 }

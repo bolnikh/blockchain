@@ -15,11 +15,14 @@ use Domain\TransactionExists;
 class BlockChainStorageFile  extends BlockChainStorageAbstract implements ServiceInterface
 {
 
-    private $storageDir = __DIR__.'/../../storage/files/';
+    private $storageDir = __DIR__.'/../../storage/files/blocks/';
 
-    public function __construct() {
+    public function __construct(string $storageDir = '') {
         parent::__construct();
 
+        if ($storageDir) {
+            $this->storageDir = $storageDir;
+        }
     }
 
 
@@ -34,11 +37,11 @@ class BlockChainStorageFile  extends BlockChainStorageAbstract implements Servic
     {
         if (is_int($block))
         {
-            return $this->storageDir.'blocks/'.$block.'.json';
+            return $this->storageDir.$block.'.json';
         }
         else
         {
-            return $this->storageDir.'blocks/'.$block->id.'.json';
+            return $this->storageDir.$block->id.'.json';
         }
     }
 
@@ -67,12 +70,9 @@ class BlockChainStorageFile  extends BlockChainStorageAbstract implements Servic
     }
 
 
-
-
-
     public function getMaxId() : int
     {
-        $files = scandir($this->storageDir.'blocks/');
+        $files = scandir($this->storageDir);
         $max_id = 0;
 
         foreach ($files as $file)
@@ -87,8 +87,15 @@ class BlockChainStorageFile  extends BlockChainStorageAbstract implements Servic
     }
 
 
+    public function delete(int $block_id) : void
+    {
+        assert($block_id >= 0);
 
+        $blockFileName = $this->blockFileName($block_id);
 
-
+        if (file_exists($blockFileName)) {
+            unlink($blockFileName);
+        }
+    }
 
 }

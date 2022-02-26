@@ -1,31 +1,38 @@
 <?php
 
+
 declare(strict_types=1);
 
-namespace Domain\Actions;
+namespace Domain\Factory;
 
 
+use App\Classes\Config;
 use App\Classes\ServiceLocator;
-use Domain\Interfaces\RunnableInterface;
+use Domain\Interfaces\BlockChainStorageInterface;
+use Domain\Interfaces\TransactionStorageInterface;
 use Domain\KeyMaster;
 use Domain\TransactionNew;
 
-class CreateNewTrx implements RunnableInterface
+class TransactionNewBalancedFactory
 {
-    private $blockChainStorage;
-    private $trxStorage;
-    private $config;
 
-    public function __construct(
-        private ServiceLocator $service
-    )
+    private ServiceLocator $service;
+    private Config $config;
+    private BlockChainStorageInterface $blockChainStorage;
+    private TransactionStorageInterface $trxStorage;
+    private TransactionStorageInterface $newTrxStorage;
+
+    public function __construct()
     {
+        $this->service = ServiceLocator::instance();
+        $this->config = $this->service->get('Config');
         $this->blockChainStorage = $this->service->get('BlockChainStorage');
         $this->trxStorage = $this->service->get('TrxStorage');
-        $this->config = $this->service->get('Config');
+        $this->newTrxStorage = $this->service->get('NewTrxStorage');
+
     }
 
-    public function run() : void
+    public function get() : TransactionNew|null
     {
         $km_from = new KeyMaster($this->config->node_private_key);
 
@@ -34,16 +41,16 @@ class CreateNewTrx implements RunnableInterface
 
         $balance_from = $this->blockChainStorage->balance($km_from->getPublicKey(true));
 
-        if ($balance_from >= 10)
-        {
+        if ($balance_from >= 10) {
             $trx = new TransactionNew([
                 'private_key' => $this->config->node_private_key,
                 'to' => $km_to->getPublicKey(true),
                 'amount' => mt_rand(1, 10),
             ]);
 
-            $this->trxStorage->store($trx);
-            // store to tnx store
+            return $trx;
         }
+
+        return null;
     }
 }

@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Domain\Storages;
 
-use Domain\Hash;
+use Domain\Node;
 
 
 class NodeStorageFile extends NodeStorageAbstract
 {
-    private $storageDir = __DIR__.'/../../storage/files/';
-    private $storageSubDir = 'nodes/';
+    private $storageDir = __DIR__.'/../../storage/files/nodes/';
     private $fileExt = 'txt';
 
     public function __construct(string $storageDir = '')
@@ -20,20 +19,20 @@ class NodeStorageFile extends NodeStorageAbstract
         }
     }
 
-    public function nodeFileName(string $node) : string
+    public function nodeFileName(Node $node) : string
     {
-        $hash = Hash::getHash($node);
-        return $this->storageDir.$this->storageSubDir.$hash.'.'.$this->fileExt;
+        $hash = $node->getHash();
+        return $this->storageDir.$hash.'.'.$this->fileExt;
     }
 
-    public function store(string $node): void
+    public function store(Node $node): void
     {
-        file_put_contents($this->nodeFileName($node), $node);
+        file_put_contents($this->nodeFileName($node), $node->toJson());
     }
 
-    public function getList(): array
+    public function getList(bool $active = true): array
     {
-        $files = scandir($this->storageDir.$this->storageSubDir);
+        $files = scandir($this->storageDir);
         $nodes = [];
 
         foreach ($files as $file)
@@ -41,20 +40,26 @@ class NodeStorageFile extends NodeStorageAbstract
             $path_parts = pathinfo($file);
             if ($path_parts['extension'] == $this->fileExt)
             {
-                $nodes[] = file_get_contents($this->storageDir.$this->storageSubDir.$file);
+                $node = new Node(json_decode(file_get_contents($this->storageDir.$file), true));
+                if ($active == true) {
+                    if ($node->isActive()) {
+                        $nodes[] = $node;
+                    }
+                } else {
+                    $nodes[] = $node;
+                }
             }
         }
 
-        sort($nodes);
         return $nodes;
     }
 
-    public function isExists(string $node): bool
+    public function isExists(Node $node): bool
     {
         return file_exists($this->nodeFileName($node));
     }
 
-    public function delete(string $node): void
+    public function delete(Node $node): void
     {
         unlink($this->nodeFileName($node));
     }

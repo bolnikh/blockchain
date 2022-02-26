@@ -5,14 +5,15 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Classes\Config;
+use App\Classes\ServiceLocator;
 
 class InfoController
 {
 
     public function action_index() : array
     {
-        $config = new Config();
+        $sl = ServiceLocator::instance();
+        $config = $sl->get('Config');
 
         $arr = [
             'coinname' => $config->coinname,
