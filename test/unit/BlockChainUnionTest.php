@@ -6,7 +6,7 @@ namespace Tests\Unit;
 use Domain\BlockNew;
 use Domain\Factory\BlockChainFactory;
 use Domain\Storages\BlockChainStorageUnion;
-use Domain\TransactionNew;
+use Domain\TrxNew;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '\..\..\vendor\autoload.php';
@@ -43,7 +43,7 @@ class BlockChainUnionTest extends TestCase
 
         $lastBl = $st->getLast();
 
-        $newTr = new TransactionNew([
+        $newTr = new TrxNew([
             'private_key' => $key2['private_key'],
             'to' => $key3['public_key'],
             'amount' => 10000000, // столько точно нет
@@ -54,7 +54,7 @@ class BlockChainUnionTest extends TestCase
         $newBl = new BlockNew([
             'id' => $lastBl->id + 1,
             'prev_block_hash' => $lastBl->hash,
-            'transactions' => [$newTr],
+            'trx' => [$newTr],
             'difficulty' => $bcf->getDifficulty(),
             'is_mining' => $bcf->isMining(),
             'mining_private_key' => $key1['private_key'],
@@ -114,7 +114,7 @@ class BlockChainUnionTest extends TestCase
         $key_to = $rand_keys[1];
         $balance_from = $positive_balance[$key_from_public];
 
-        $newTr1 = new TransactionNew([
+        $newTr1 = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => intval(ceil($balance_from / 4)),
@@ -126,7 +126,7 @@ class BlockChainUnionTest extends TestCase
         $newBl1 = new BlockNew([
             'id' => $lastBl->id + 1,
             'prev_block_hash' => $lastBl->hash,
-            'transactions' => [$newTr1],
+            'trx' => [$newTr1],
             'difficulty' => $bcf->getDifficulty(),
             'is_mining' => $bcf->isMining(),
             'mining_private_key' => $key1['private_key'],
@@ -135,7 +135,7 @@ class BlockChainUnionTest extends TestCase
         $newBl1->findProof();
 
 
-        $newTr2 = new TransactionNew([
+        $newTr2 = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => intval(ceil($balance_from / 3)),
@@ -147,7 +147,7 @@ class BlockChainUnionTest extends TestCase
         $newBl2 = new BlockNew([
             'id' => $newBl1->id + 1,
             'prev_block_hash' => $newBl1->hash,
-            'transactions' => [$newTr2],
+            'trx' => [$newTr2],
             'difficulty' => $bcf->getDifficulty(),
             'is_mining' => $bcf->isMining(),
             'mining_private_key' => $key1['private_key'],

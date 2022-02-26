@@ -11,7 +11,7 @@ class BlockNew extends BlockExists
     private int $mining_award = 10;
 
     private array $fillable = [
-        'id', 'prev_block_hash', 'created_at', 'transactions', 'difficulty', 'mining_private_key', 'is_mining', 'mining_award'
+        'id', 'prev_block_hash', 'created_at', 'trx', 'difficulty', 'mining_private_key', 'is_mining', 'mining_award'
     ];
 
     public function __construct($data = []) {
@@ -27,7 +27,7 @@ class BlockNew extends BlockExists
         }
 
         $this->createMiningAwardTransaction();
-        $this->transactions_hash = $this->getTransactionsHash();
+        $this->trx_hash = $this->getTrxHash();
         $this->hash = $this->calcHash();
 
     }
@@ -40,23 +40,23 @@ class BlockNew extends BlockExists
             return ;
         }
 
-        $tr = new TransactionMining(
+        $tr = new TrxMining(
             [
                 'amount' => $this->mining_award,
                 'private_key' => $this->mining_private_key,
             ]
         );
 
-        array_unshift($this->transactions, $tr);
+        array_unshift($this->trx, $tr);
     }
 
 
-    public function filterValidTransactions() : bool
+    public function filterValidTrx() : bool
     {
-        foreach ($this->transactions as $k => $tr)
+        foreach ($this->trx as $k => $tr)
         {
             if (false === $tr->isValidForNewBlock()) {
-                unset($this->transactions[$k]);
+                unset($this->trx[$k]);
                 break;
             }
         }
@@ -75,14 +75,14 @@ class BlockNew extends BlockExists
         return false;
     }
 
-    public function addTransaction(TransactionNew $tr) : void
+    public function addTrx(TrxNew $tr) : void
     {
-        $this->transactions[] = $tr;
+        $this->trx[] = $tr;
     }
 
-    public function verifyTransactions() : bool
+    public function verifyTrx() : bool
     {
-        foreach ($this->transactions as $tr)
+        foreach ($this->trx as $tr)
         {
             if (false === $tr->isValidForNewBlock()) {
                 return false;

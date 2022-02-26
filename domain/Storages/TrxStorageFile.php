@@ -6,15 +6,15 @@ declare(strict_types=1);
 namespace Domain\Storages;
 
 
-use Domain\Exceptions\TransactionNotExists;
-use Domain\TransactionExists;
-use Domain\TransactionNew;
+use Domain\Exceptions\TrxNotExists;
+use Domain\TrxExists;
+use Domain\TrxNew;
 
-class TransactionStorageFile extends TransactionStorageAbstract
+class TrxStorageFile extends TrxStorageAbstract
 {
 
-    private $storageDir = __DIR__.'/../../storage/files/';
-    private $storageSubDir = 'transactions/';
+    private $storageDir = __DIR__.'/../../storage/files/trx/';
+
     private $fileExt = 'json';
 
     public function __construct(string $storageDir = '')
@@ -25,7 +25,7 @@ class TransactionStorageFile extends TransactionStorageAbstract
     }
 
 
-    public function trxFileName(TransactionExists|TransactionNew|string $trx) : string
+    public function trxFileName(TrxExists|TrxNew|string $trx) : string
     {
         if (is_string($trx))
         {
@@ -35,7 +35,7 @@ class TransactionStorageFile extends TransactionStorageAbstract
         }
     }
 
-    public function store(TransactionExists|TransactionNew $trx): void
+    public function store(TrxExists|TrxNew $trx): void
     {
         $json_obj = json_encode($trx);
         file_put_contents($this->trxFileName($trx), $json_obj);
@@ -64,17 +64,17 @@ class TransactionStorageFile extends TransactionStorageAbstract
         return file_exists($this->trxFileName($key));
     }
 
-    public function get(string $key): TransactionExists|TransactionNew
+    public function get(string $key): TrxExists|TrxNew
     {
         if (!$this->isExists($key))
         {
-            throw new TransactionNotExists('Can not get trx');
+            throw new TrxNotExists('Can not get trx');
         }
 
         $json_data = file_get_contents($this->trxFileName($key));
         $arr = json_decode($json_data, true, 10, JSON_THROW_ON_ERROR);
 
-        return new TransactionExists($arr);
+        return new TrxExists($arr);
     }
 
     public function delete(string $key): void

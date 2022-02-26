@@ -6,9 +6,9 @@ declare(strict_types=1);
 namespace Domain\Storages;
 
 use App\Interfaces\ServiceInterface;
-use Domain\Interfaces\TransactionStorageInterface;
+use Domain\Interfaces\TrxStorageInterface;
 
-abstract class TransactionStorageAbstract implements TransactionStorageInterface, ServiceInterface
+abstract class TrxStorageAbstract implements TrxStorageInterface, ServiceInterface
 {
     public function deleteAllByTtl(): void
     {
@@ -24,7 +24,7 @@ abstract class TransactionStorageAbstract implements TransactionStorageInterface
 
     public function deleteAll(string $iAmSure): void
     {
-        if ($iAmSure != 'I am sure to delete all transactions')
+        if ($iAmSure != 'I am sure to delete all trx')
         {
             return;
         }

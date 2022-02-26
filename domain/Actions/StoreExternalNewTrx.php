@@ -7,18 +7,18 @@ namespace Domain\Actions;
 
 use App\Classes\ServiceLocator;
 use Domain\Interfaces\RunnableInterface;
-use Domain\Interfaces\TransactionStorageInterface;
-use Domain\TransactionExists;
+use Domain\Interfaces\TrxStorageInterface;
+use Domain\TrxExists;
 
 
 class StoreExternalNewTrx implements RunnableInterface
 {
     private ServiceLocator $service;
-    private TransactionStorageInterface $trxStorage;
-    private TransactionStorageInterface $newTrxStorage;
+    private TrxStorageInterface $trxStorage;
+    private TrxStorageInterface $newTrxStorage;
 
     public function __construct(
-        private TransactionExists $trx
+        private TrxExists $trx
     )
     {
         $this->service = ServiceLocator::instance();

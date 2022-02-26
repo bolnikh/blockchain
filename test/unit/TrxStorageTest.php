@@ -2,17 +2,17 @@
 
 namespace Tests\Unit;
 
-use Domain\Exceptions\TransactionNotExists;
-use Domain\Factory\TransactionNewFactory;
-use Domain\Storages\TransactionStorageFile;
-use Domain\Storages\TransactionStorageMemory;
+use Domain\Exceptions\TrxNotExists;
+use Domain\Factory\TrxNewFactory;
+use Domain\Storages\TrxStorageFile;
+use Domain\Storages\TrxStorageMemory;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '\..\..\vendor\autoload.php';
 
 
 
-class TransactionStorageTest extends TestCase
+class TrxStorageTest extends TestCase
 {
     private $storage;
     private $factory;
@@ -21,11 +21,10 @@ class TransactionStorageTest extends TestCase
     {
         parent::setUp();
 
-        $this->storage = new TransactionStorageMemory();
-        //$this->storage = new TransactionStorageFile();
-        $this->factory = new TransactionNewFactory();
+        $this->storage = new TrxStorageMemory();
+        $this->factory = new TrxNewFactory();
 
-        $this->storage->deleteAll('I am sure to delete all transactions');
+        $this->storage->deleteAll('I am sure to delete all trx');
     }
 
     public function test_store()
@@ -73,7 +72,7 @@ class TransactionStorageTest extends TestCase
     public function test_not_exist_exception()
     {
         $tnx = $this->factory->reset()->produce();
-        $this->expectException(TransactionNotExists::class);
+        $this->expectException(TrxNotExists::class);
         $this->storage->get($tnx->hash);
 
 
@@ -91,7 +90,7 @@ class TransactionStorageTest extends TestCase
         sort($a);
         $this->assertEquals($a, $this->storage->getKeyList());
 
-        $this->storage->deleteAll('I am sure to delete all transactions');
+        $this->storage->deleteAll('I am sure to delete all trx');
         $this->assertEmpty($this->storage->getKeyList());
     }
 

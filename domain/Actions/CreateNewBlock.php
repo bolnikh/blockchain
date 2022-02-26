@@ -14,7 +14,7 @@ use Domain\Interfaces\RunnableInterface;
  * Class CreateNewBlock
  *
  * create new block for blockchain
- * collect transactions
+ * collect trx
  * store them into block
  * produce block
  * store it to blockchain
@@ -39,7 +39,7 @@ class CreateNewBlock implements RunnableInterface
     public function run() : void
     {
         // получить новые транзации, проверить их и сформировать пул транзаций
-        $transactions = [];
+        $trx = [];
 
         // формируем блок
         $lastBlId = $this->storage->getMaxId();
@@ -48,7 +48,7 @@ class CreateNewBlock implements RunnableInterface
         $bl = new BlockNew([
             'id' => $lastBlId + 1,
             'prev_block_hash' => $lastBl ? $lastBl->hash : BlockExists::EmptyPrevBlockHash ,
-            'transactions' => $transactions,
+            'trx' => $trx,
             'difficulty' => $this->config->difficulty,
             'is_mining' => $this->config->is_mining,
             'mining_private_key' => $this->config->node_private_key,

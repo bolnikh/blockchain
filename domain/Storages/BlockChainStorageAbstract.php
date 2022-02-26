@@ -118,7 +118,7 @@ abstract class BlockChainStorageAbstract implements BlockChainStorageInterface
             {
                 break;
             }
-            foreach ($bl->transactions as $tr)
+            foreach ($bl->trx as $tr)
             {
                 if ($tr->from == $from)
                 {
@@ -153,7 +153,7 @@ abstract class BlockChainStorageAbstract implements BlockChainStorageInterface
             if ($before_block_id > 0 && $before_block_id <= $bl->id) { // check all blocks before
                 return false;
             }
-            foreach ($bl->transactions as $tr) {
+            foreach ($bl->trx as $tr) {
                 if ($tr->hash === $hash) {
                     return true;
                 }

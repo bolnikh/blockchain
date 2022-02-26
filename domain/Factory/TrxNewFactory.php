@@ -5,10 +5,10 @@ declare(strict_types=1);
 
 namespace Domain\Factory;
 
-use Domain\TransactionNew;
+use Domain\TrxNew;
 use Domain\KeyMaster;
 
-class TransactionNewFactory
+class TrxNewFactory
 {
     public string $private_key_from;
     public string $to;
@@ -53,11 +53,11 @@ class TransactionNewFactory
         }
     }
 
-    public function produce() : TransactionNew
+    public function produce() : TrxNew
     {
         $this->prepare();
 
-        $tn = new TransactionNew([
+        $tn = new TrxNew([
             'private_key' => $this->private_key_from,
             'to' => $this->to,
             'amount' => $this->amount,

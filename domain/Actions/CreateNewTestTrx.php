@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Domain\Actions;
 
 
-use Domain\Factory\TransactionNewBalancedFactory;
+use Domain\Factory\TrxNewBalancedFactory;
 use Domain\Interfaces\RunnableInterface;
 
 
@@ -18,7 +18,7 @@ class CreateNewTestTrx implements RunnableInterface
 
     public function run() : void
     {
-        $factory = new TransactionNewBalancedFactory();
+        $factory = new TrxNewBalancedFactory();
         $trx = $factory->get();
 
         if ($trx) {

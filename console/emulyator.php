@@ -1,7 +1,7 @@
 <?php
 
 
-use Domain\TransactionNew;
+use Domain\TrxNew;
 
 require_once __DIR__.'/../app/bootstrap.php';
 
@@ -18,7 +18,7 @@ $config = $service->get('Config');
 $blockChainStorage = $service->get('BlockChainStorage');
 
 /**
- * @var \Domain\Interfaces\TransactionStorageInterface $trxStorage
+ * @var \Domain\Interfaces\TrxStorageInterface $trxStorage
  */
 $trxStorage = $service->get('TrxStorage');
 
@@ -40,7 +40,7 @@ while (true)
             $fileName = ROOT_DIR.'/storage/keys/key'.mt_rand(1, 5).'.pem';
             $km_to = new \Domain\KeyMaster(file_get_contents($fileName));
 
-            $tnx = new TransactionNew([
+            $tnx = new TrxNew([
                 'private_key' => $config->node_private_key,
                 'to' => $km_to->getPublicKey(true),
                 'amount' => mt_rand(5, 20),

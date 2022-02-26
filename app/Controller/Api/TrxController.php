@@ -9,13 +9,13 @@ namespace App\Controller\Api;
 
 use App\Classes\ServiceLocator;
 use Domain\Interfaces\BlockChainStorageInterface;
-use Domain\Interfaces\TransactionStorageInterface;
-use Domain\TransactionExists;
+use Domain\Interfaces\TrxStorageInterface;
+use Domain\TrxExists;
 
 
-class TransactionController
+class TrxController
 {
-    private TransactionStorageInterface $trxStorage;
+    private TrxStorageInterface $trxStorage;
     private BlockChainStorageInterface $blockChainStorage;
 
     public function __construct()
@@ -31,7 +31,7 @@ class TransactionController
         $result = [];
 
         foreach ($params['trxs'] as $trxArr) {
-            $trx = new TransactionExists($trxArr);
+            $trx = new TrxExists($trxArr);
             if (!$trx->isValidForExistsBlock()) {
                 $result[$trx->hash] = ['error' => 'not_valid'];
                 continue;
@@ -54,7 +54,7 @@ class TransactionController
         return $this->trxStorage->getKeyList();
     }
 
-    public function action_get_trx(array $params) : TransactionExists
+    public function action_get_trx(array $params) : TrxExists
     {
         return $this->trxStorage->get($params['trx_hash']);
     }

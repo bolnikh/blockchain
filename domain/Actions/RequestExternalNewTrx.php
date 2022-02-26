@@ -7,14 +7,14 @@ namespace Domain\Actions;
 use App\Classes\NodeDataTransfer;
 use App\Classes\ServiceLocator;
 use Domain\Interfaces\RunnableInterface;
-use Domain\Interfaces\TransactionStorageInterface;
+use Domain\Interfaces\TrxStorageInterface;
 use Domain\Node;
 
 class RequestExternalNewTrx implements RunnableInterface
 {
     private ServiceLocator $service;
-    private TransactionStorageInterface $trxStorage;
-    private TransactionStorageInterface $newTrxStorage;
+    private TrxStorageInterface $trxStorage;
+    private TrxStorageInterface $newTrxStorage;
 
     public function __construct(
         private Node $externalNode

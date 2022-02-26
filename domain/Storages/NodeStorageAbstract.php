@@ -11,7 +11,7 @@ abstract class NodeStorageAbstract implements NodeStorageInterface, ServiceInter
 {
     public function deleteAll(string $iAmSure): void
     {
-        if ($iAmSure != 'I am sure to delete all transactions')
+        if ($iAmSure != 'I am sure to delete all trx')
         {
             return;
         }

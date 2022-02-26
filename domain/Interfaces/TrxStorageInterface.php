@@ -5,18 +5,18 @@ declare(strict_types=1);
 
 namespace Domain\Interfaces;
 
-use Domain\TransactionExists;
-use Domain\TransactionNew;
+use Domain\TrxExists;
+use Domain\TrxNew;
 
-interface TransactionStorageInterface
+interface TrxStorageInterface
 {
-    public function store(TransactionNew|TransactionExists $trx) : void;
+    public function store(TrxNew|TrxExists $trx) : void;
 
     public function getKeyList() : array;
 
     public function isExists(string $key) : bool;
 
-    public function get(string $key) : TransactionExists|TransactionNew;
+    public function get(string $key) : TrxExists|TrxNew;
 
     public function delete(string $key) : void;
 

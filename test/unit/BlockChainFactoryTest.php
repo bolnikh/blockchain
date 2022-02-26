@@ -6,7 +6,7 @@ namespace Tests\Unit;
 use Domain\BlockChainBalanceValidate;
 use Domain\BlockNew;
 use Domain\Factory\BlockChainFactory;
-use Domain\TransactionNew;
+use Domain\TrxNew;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . '\..\..\vendor\autoload.php';
@@ -31,13 +31,13 @@ class BlockChainFactoryTest  extends TestCase
         foreach ($st as $bl)
         {
             $this->assertTrue($bl->verifyProof());
-            $this->assertTrue($bl->verifyTransactions());
+            $this->assertTrue($bl->verifyTrx());
             $this->assertTrue($bl->verifyHash());
-            $this->assertTrue($bcbv->validateBlockTransactionsBalance($st, $bl));
-            $this->assertTrue($bl->checkMiningTransaction($bcf->isMining(), $bcf->getMiningAward()));
+            $this->assertTrue($bcbv->validateBlockTrxBalance($st, $bl));
+            $this->assertTrue($bl->checkMiningTrx($bcf->isMining(), $bcf->getMiningAward()));
         }
 
-        // create new block and add & validate new transactions
+        // create new block and add & validate new trx
 
         $keyList = $bcf->getKeyList();
 
@@ -51,14 +51,14 @@ class BlockChainFactoryTest  extends TestCase
         $newBl = new BlockNew([
             'id' => $lastBl->id + 1,
             'prev_block_hash' => $lastBl->hash,
-            'transactions' => [],
+            'trx' => [],
             'difficulty' => $bcf->getDifficulty(),
             'is_mining' => $bcf->isMining(),
             'mining_private_key' => $key1['private_key'],
             'mining_award' => $bcf->getMiningAward(),
         ]);
 
-        $newTr = new TransactionNew([
+        $newTr = new TrxNew([
             'private_key' => $key2['private_key'],
             'to' => $key3['public_key'],
             'amount' => 10000000, // столько точно нет
@@ -66,7 +66,7 @@ class BlockChainFactoryTest  extends TestCase
             'ttl' => 3600,
         ]);
 
-        $this->assertFalse($bcbv->validateNewTransactionBalance($st, $newBl, $newTr));
+        $this->assertFalse($bcbv->validateNewTrxBalance($st, $newBl, $newTr));
 
 
         $positive_balance = [];
@@ -88,7 +88,7 @@ class BlockChainFactoryTest  extends TestCase
         $key_to = $rand_keys[1];
         $balance_from = $positive_balance[$key_from_public];
 
-        $newTr = new TransactionNew([
+        $newTr = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => intval(ceil($balance_from / 2)),
@@ -96,10 +96,10 @@ class BlockChainFactoryTest  extends TestCase
             'ttl' => 3600,
         ]);
 
-        $this->assertTrue($bcbv->validateNewTransactionBalance($st, $newBl, $newTr));
+        $this->assertTrue($bcbv->validateNewTrxBalance($st, $newBl, $newTr));
 
 
-        $newTr = new TransactionNew([
+        $newTr = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => $balance_from * 2,
@@ -107,10 +107,10 @@ class BlockChainFactoryTest  extends TestCase
             'ttl' => 3600,
         ]);
 
-        $this->assertFalse($bcbv->validateNewTransactionBalance($st, $newBl, $newTr));
+        $this->assertFalse($bcbv->validateNewTrxBalance($st, $newBl, $newTr));
 
 
-        $newTr = new TransactionNew([
+        $newTr = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => intval(floor($balance_from / 2)),
@@ -118,9 +118,9 @@ class BlockChainFactoryTest  extends TestCase
             'ttl' => 3600,
         ]);
 
-        $newBl->addTransaction($newTr);
+        $newBl->addTrx($newTr);
 
-        $newTr_1 = new TransactionNew([
+        $newTr_1 = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => intval(floor($balance_from / 2)),
@@ -128,11 +128,11 @@ class BlockChainFactoryTest  extends TestCase
             'ttl' => 3600,
         ]);
 
-        $this->assertTrue($bcbv->validateNewTransactionBalance($st, $newBl, $newTr_1));
+        $this->assertTrue($bcbv->validateNewTrxBalance($st, $newBl, $newTr_1));
 
-        $newBl->addTransaction($newTr_1);
+        $newBl->addTrx($newTr_1);
 
-        $newTr_2 = new TransactionNew([
+        $newTr_2 = new TrxNew([
             'private_key' => $key_from_private,
             'to' => $key_to,
             'amount' => intval(floor($balance_from / 2)),
@@ -140,7 +140,7 @@ class BlockChainFactoryTest  extends TestCase
             'ttl' => 3600,
         ]);
 
-        $this->assertFalse($bcbv->validateNewTransactionBalance($st, $newBl, $newTr_2));
+        $this->assertFalse($bcbv->validateNewTrxBalance($st, $newBl, $newTr_2));
 
     }
 }

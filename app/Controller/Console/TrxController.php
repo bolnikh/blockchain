@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Console;
 
-class TransactionController
+class TrxController
 {
 
     public function action_send_trxs(array $trxs) : array

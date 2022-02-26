@@ -5,11 +5,11 @@ declare(strict_types = 1);
 namespace Domain;
 
 /**
- * Class TransactionExists
+ * Class TrxExists
  * транзакция в блоке
  * @package Domain
  */
-class TransactionExists
+class TrxExists
 {
     public string $from;
     public string $to;
@@ -128,6 +128,6 @@ class TransactionExists
 
     public function isMining()
     {
-        return $this->from === TransactionExists::MINING_FROM;
+        return $this->from === TrxExists::MINING_FROM;
     }
 }

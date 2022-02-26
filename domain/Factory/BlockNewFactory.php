@@ -23,7 +23,7 @@ class BlockNewFactory
 
     protected int $id = 1;
     protected string $prev_block_hash = BlockExists::EmptyPrevBlockHash;
-    protected array $transactions = [];
+    protected array $trx = [];
     protected string $difficulty = '000f';
 
     protected string $mining_private_key;
@@ -76,7 +76,7 @@ class BlockNewFactory
 
         for ($i = 0; $i < $this->transaction_list_size; $i++)
         {
-            $tnf = new TransactionNewFactory();
+            $tnf = new TrxNewFactory();
 
             $from = $this->arrayRand($this->key_list_from);
             $tnf->private_key_from = $from['private_key'];
@@ -111,7 +111,7 @@ class BlockNewFactory
         $nb = new BlockNew([
             'id' => $this->id,
             'prev_block_hash' => $this->prev_block_hash,
-            'transactions' => $this->transactions,
+            'trx' => $this->trx,
             'difficulty' => $this->difficulty,
             'is_mining' => $this->is_mining,
             'mining_private_key' => $this->mining_private_key,

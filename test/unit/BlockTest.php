@@ -19,7 +19,7 @@ class BlockTest  extends TestCase
 
         $bn = $bnf->produce();
 
-        $this->assertTrue($bn->verifyTransactions());
+        $this->assertTrue($bn->verifyTrx());
         $this->assertTrue($bn->verifyHash());
         $this->assertTrue($bn->verifyProof());
     }
@@ -31,7 +31,7 @@ class BlockTest  extends TestCase
 
         $bn = $bmf->produce();
 
-        $this->assertTrue($bn->verifyTransactions());
+        $this->assertTrue($bn->verifyTrx());
         $this->assertTrue($bn->verifyHash());
         $this->assertTrue($bn->verifyProof());
     }
@@ -43,7 +43,7 @@ class BlockTest  extends TestCase
 
         $bn = $bnf->produce();
 
-        foreach ($bn->transactions as $tr)
+        foreach ($bn->trx as $tr)
         {
             $this->assertTrue($bn->hasTrx($tr->hash));
             $this->assertFalse($bn->hasTrx($tr->hash.'1'));

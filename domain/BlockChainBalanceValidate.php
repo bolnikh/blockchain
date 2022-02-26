@@ -12,7 +12,7 @@ use Domain\Interfaces\BlockChainStorageInterface;
 class BlockChainBalanceValidate implements BlockChainBalanceValidateInterface
 {
 
-    public function validateBlockTransactionsBalance(BlockChainStorageInterface $blockChainStorage, int|BlockExists|BlockNew $bl): bool
+    public function validateBlockTrxBalance(BlockChainStorageInterface $blockChainStorage, int|BlockExists|BlockNew $bl): bool
     {
         if (is_int($bl))
         {
@@ -20,7 +20,7 @@ class BlockChainBalanceValidate implements BlockChainBalanceValidateInterface
         }
 
         $tr_spend = [];
-        foreach ($bl->transactions as $tr)
+        foreach ($bl->trx as $tr)
         {
             if (!isset($tr_spend[$tr->from]))
             {
@@ -31,7 +31,7 @@ class BlockChainBalanceValidate implements BlockChainBalanceValidateInterface
 
         foreach ($tr_spend as $from => $spend)
         {
-            if ($from == TransactionExists::MINING_FROM)
+            if ($from == TrxExists::MINING_FROM)
             {
                 continue;
             }
@@ -44,15 +44,15 @@ class BlockChainBalanceValidate implements BlockChainBalanceValidateInterface
         return true;
     }
 
-    public function validateNewTransactionBalance(BlockChainStorageInterface $blockChainStorage, BlockNew $blockNew, TransactionNew $transactionNew): bool
+    public function validateNewTrxBalance(BlockChainStorageInterface $blockChainStorage, BlockNew $blockNew, TrxNew $transactionNew): bool
     {
-        if ($transactionNew->from == TransactionExists::MINING_FROM)
+        if ($transactionNew->from == TrxExists::MINING_FROM)
         {
             return true;
         }
 
         $tr_spend = 0;
-        foreach ($blockNew->transactions as $tr)
+        foreach ($blockNew->trx as $tr)
         {
             if ($tr->from == $transactionNew->from)
             {
@@ -66,7 +66,7 @@ class BlockChainBalanceValidate implements BlockChainBalanceValidateInterface
     public function validateNewBlock(BlockChainStorageInterface $blockChainStorage, BlockNew $blockNew): bool
     {
         // TODO: Implement validateNewBlock() method.
-        // не тоже самое как validateBlockTransactionsBalance ??
+        // не тоже самое как validateBlockTrxBalance ??
 
         return true;
     }

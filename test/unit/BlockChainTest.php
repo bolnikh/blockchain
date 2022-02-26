@@ -8,7 +8,7 @@ use Domain\BlockExists;
 use Domain\Storages\BlockChainStorageMemory;
 use Domain\BlockNew;
 use Domain\Factory\BlockNewFactory;
-use Domain\TransactionNew;
+use Domain\TrxNew;
 use PHPUnit\Framework\TestCase;
 
 class BlockChainTest extends TestCase
@@ -25,7 +25,7 @@ class BlockChainTest extends TestCase
         $nb1 = new BlockNew([
             'id' => 1,
             'prev_block_hash' => BlockExists::EmptyPrevBlockHash,
-            'transactions' => [],
+            'trx' => [],
             'difficulty' => $difficulty,
             'is_mining' => $is_mining,
             'mining_private_key' => $key_list[0]['private_key'],
@@ -41,7 +41,7 @@ class BlockChainTest extends TestCase
         $nb2 = new BlockNew([
             'id' => 2,
             'prev_block_hash' => $nb1->getHash(),
-            'transactions' => [],
+            'trx' => [],
             'difficulty' => $difficulty,
             'is_mining' => $is_mining,
             'mining_private_key' => $key_list[0]['private_key'],
@@ -60,13 +60,13 @@ class BlockChainTest extends TestCase
         $this->assertEquals($mining_award * 2, $bsm->balance($key_list[0]['public_key']));
 
 
-        $tn1 = new TransactionNew([
+        $tn1 = new TrxNew([
             'private_key' => $key_list[0]['private_key'],
             'to' => $key_list[1]['public_key'],
             'amount' => $mining_award / 5,
         ]);
 
-        $tn2 = new TransactionNew([
+        $tn2 = new TrxNew([
             'private_key' => $key_list[0]['private_key'],
             'to' => $key_list[2]['public_key'],
             'amount' => $mining_award / 10,
@@ -75,7 +75,7 @@ class BlockChainTest extends TestCase
         $nb3 = new BlockNew([
             'id' => 3,
             'prev_block_hash' => $nb2->getHash(),
-            'transactions' => [
+            'trx' => [
                 $tn1, $tn2
             ],
             'difficulty' => $difficulty,
@@ -127,7 +127,7 @@ class BlockChainTest extends TestCase
         $nb1 = new BlockNew([
             'id' => 1,
             'prev_block_hash' => BlockExists::EmptyPrevBlockHash,
-            'transactions' => [],
+            'trx' => [],
             'difficulty' => $difficulty,
             'is_mining' => $is_mining,
             'mining_private_key' => $key_list[0]['private_key'],
@@ -137,7 +137,7 @@ class BlockChainTest extends TestCase
         $bsm->store($nb1);
 
 
-        foreach ($nb1->transactions as $tr) {
+        foreach ($nb1->trx as $tr) {
             $this->assertTrue($bsm->isTrxUsed($tr->hash));
             $this->assertFalse($bsm->isTrxUsed($tr->hash.'1'));
         }
@@ -145,7 +145,7 @@ class BlockChainTest extends TestCase
         $nb2 = new BlockNew([
             'id' => 2,
             'prev_block_hash' => $nb1->getHash(),
-            'transactions' => [],
+            'trx' => [],
             'difficulty' => $difficulty,
             'is_mining' => $is_mining,
             'mining_private_key' => $key_list[0]['private_key'],
@@ -154,18 +154,18 @@ class BlockChainTest extends TestCase
 
         $bsm->store($nb2);
 
-        foreach ($nb2->transactions as $tr) {
+        foreach ($nb2->trx as $tr) {
             $this->assertTrue($bsm->isTrxUsed($tr->hash));
             $this->assertFalse($bsm->isTrxUsed($tr->hash.'1'));
         }
 
-        $tn1 = new TransactionNew([
+        $tn1 = new TrxNew([
             'private_key' => $key_list[0]['private_key'],
             'to' => $key_list[1]['public_key'],
             'amount' => $mining_award / 5,
         ]);
 
-        $tn2 = new TransactionNew([
+        $tn2 = new TrxNew([
             'private_key' => $key_list[0]['private_key'],
             'to' => $key_list[2]['public_key'],
             'amount' => $mining_award / 10,
@@ -174,7 +174,7 @@ class BlockChainTest extends TestCase
         $nb3 = new BlockNew([
             'id' => 3,
             'prev_block_hash' => $nb2->getHash(),
-            'transactions' => [
+            'trx' => [
                 $tn1, $tn2
             ],
             'difficulty' => $difficulty,

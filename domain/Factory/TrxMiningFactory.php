@@ -5,10 +5,10 @@ declare(strict_types=1);
 
 namespace Domain\Factory;
 
-use Domain\TransactionMining;
+use Domain\TrxMining;
 use Domain\KeyMaster;
 
-class TransactionMiningFactory
+class TrxMiningFactory
 {
     private string $private_key;
     private int $amount;
@@ -35,11 +35,11 @@ class TransactionMiningFactory
 
     }
 
-    public function produce() : TransactionMining
+    public function produce() : TrxMining
     {
         $this->prepare();
 
-        $tm = new TransactionMining([
+        $tm = new TrxMining([
             'private_key' => $this->private_key,
             'amount' => $this->amount,
         ]);

@@ -8,13 +8,13 @@ namespace Domain\Factory;
 use Domain\BlockExists;
 use Domain\BlockNew;
 use Domain\Storages\BlockChainStorageMemory;
-use Domain\TransactionNew;
+use Domain\TrxNew;
 use Exception;
 
 class BlockChainFactory
 {
     private array $balance = [];
-    private array $transactions = [];
+    private array $trx = [];
 
     public function __construct(
         private BlockChainStorageMemory|null $bcs = null,
@@ -96,7 +96,7 @@ class BlockChainFactory
     public function addBlock()
     {
         $this->refreshBalance();
-        $this->prepareTransactions();
+        $this->prepareTrx();
 
         $mining_key = $this->findKeyByPublicKey($this->getRandomPublicKey());
 
@@ -105,7 +105,7 @@ class BlockChainFactory
         $bl = new BlockNew([
             'id' => $lastBlock ? $lastBlock->nextBlockId() : 1,
             'prev_block_hash' => $lastBlock ? $lastBlock->hash : BlockExists::EmptyPrevBlockHash,
-            'transactions' => $this->transactions,
+            'trx' => $this->trx,
             'difficulty' => $this->difficulty,
             'is_mining' => $this->is_mining,
             'mining_private_key' => $mining_key['private_key'],
@@ -126,7 +126,7 @@ class BlockChainFactory
         }
     }
 
-    private function prepareTransactions() : void
+    private function prepareTrx() : void
     {
         $positive_balance = [];
         foreach ($this->balance as $key => $val)
@@ -139,11 +139,11 @@ class BlockChainFactory
 
         if (empty($positive_balance))
         {
-            $this->transactions = [];
+            $this->trx = [];
             return;
         }
 
-        $transactions = [];
+        $trx = [];
         foreach ($positive_balance as $public_key)
         {
             if (mt_rand(0, 100) < 20)
@@ -156,7 +156,7 @@ class BlockChainFactory
                     $to = $this->getRandomPublicKey($public_key);
                     $from = $this->findKeyByPublicKey($public_key);
 
-                    $transactions[] = new TransactionNew([
+                    $trx[] = new TrxNew([
                         'private_key' => $from['private_key'],
                         'to' => $to,
                         'amount' => $amount,
@@ -167,7 +167,7 @@ class BlockChainFactory
             }
         }
 
-        $this->transactions = $transactions;
+        $this->trx = $trx;
     }
 
     public function getRandomPublicKey($not_this_public_key = '') : string

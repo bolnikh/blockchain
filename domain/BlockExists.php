@@ -12,16 +12,16 @@ class BlockExists
     public string $hash;
     public string $prev_block_hash;
     public int $created_at;
-    public string $transactions_hash;
+    public string $trx_hash;
     /**
-     * @var TransactionExists[]|TransactionNew[]
+     * @var TrxExists[]|TrxNew[]
      */
-    public array $transactions;
+    public array $trx;
     public string $difficulty;
     public int $proof;
 
     private array $fillable = [
-        'id', 'hash', 'prev_block_hash', 'created_at', 'transactions_hash', 'transactions', 'difficulty', 'proof',
+        'id', 'hash', 'prev_block_hash', 'created_at', 'trx_hash', 'trx', 'difficulty', 'proof',
     ];
 
     public function __construct($data = []) {
@@ -41,24 +41,24 @@ class BlockExists
     }
 
 
-    public function getTransactionsHash() : string
+    public function getTrxHash() : string
     {
         $str = '';
-        foreach ($this->transactions as $tr)
+        foreach ($this->trx as $tr)
         {
             $str .= $tr->hash;
         }
         return Hash::getHash($str);
     }
 
-    public function verifyTransactionsHash() : bool
+    public function verifyTrxHash() : bool
     {
-        return $this->transactions_hash === $this->getTransactionsHash();
+        return $this->trx_hash === $this->getTrxHash();
     }
 
-    public function verifyTransactions() : bool
+    public function verifyTrx() : bool
     {
-        foreach ($this->transactions as $tr)
+        foreach ($this->trx as $tr)
         {
             if (false === $tr->isValidForExistsBlock()) {
                 return false;
@@ -68,9 +68,9 @@ class BlockExists
     }
 
 
-    public function verifyAllTransactions() : bool
+    public function verifyAllTrx() : bool
     {
-        return $this->verifyTransactions();
+        return $this->verifyTrx();
     }
 
     public function calcHash() : string
@@ -79,7 +79,7 @@ class BlockExists
             $this->id
             .$this->prev_block_hash
             .$this->created_at
-            .$this->transactions_hash
+            .$this->trx_hash
             .$this->difficulty
         );
     }
@@ -99,15 +99,15 @@ class BlockExists
         return $this->id + 1;
     }
 
-    public function checkMiningTransaction($useMining, $award = 100)
+    public function checkMiningTrx($useMining, $award = 100)
     {
         if ($useMining) {
-            if (sizeof($this->transactions) == 0)
+            if (sizeof($this->trx) == 0)
             {
                 return false; // должна быть хотя бы майнинг транзакция
             }
 
-            $tr_0 = $this->transactions[0];
+            $tr_0 = $this->trx[0];
             if (!$tr_0->isMining())
             {
                 return false; // манинг транзакция должна быть первой
@@ -117,17 +117,17 @@ class BlockExists
                 return false; // манинг транзакция должна быть на верную сумму
             }
 
-            for ($i = 1; $i < sizeof($this->transactions); $i++)
+            for ($i = 1; $i < sizeof($this->trx); $i++)
             {
-                if ($this->transactions[$i]->isMining())
+                if ($this->trx[$i]->isMining())
                 {
                     return false; // дожна быть только одна майнинг транзакция
                 }
             }
         } else {
-            for ($i = 0; $i < sizeof($this->transactions); $i++)
+            for ($i = 0; $i < sizeof($this->trx); $i++)
             {
-                if ($this->transactions[$i]->isMining())
+                if ($this->trx[$i]->isMining())
                 {
                     return false; // не должно быть майнинг транзакций
                 }
@@ -140,14 +140,14 @@ class BlockExists
     public function verifyBlock()
     {
         return $this->verifyProof()
-            && $this->verifyTransactionsHash()
-            && $this->verifyTransactions()
+            && $this->verifyTrxHash()
+            && $this->verifyTrx()
             && $this->verifyHash();
     }
 
     public function hasTrx(string $trxHash) : bool
     {
-        foreach ($this->transactions as $tr)
+        foreach ($this->trx as $tr)
         {
             if ($tr->hash === $trxHash) {
                 return true;

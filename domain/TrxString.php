@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Domain;
 
-class TransactionString extends TransactionExists
+class TrxString extends TrxExists
 {
 
     public function __construct(
@@ -13,7 +13,7 @@ class TransactionString extends TransactionExists
     {
     }
 
-    public function fromString() : TransactionExists
+    public function fromString() : TrxExists
     {
         $arr = explode(':', $this->string);
 
@@ -27,6 +27,6 @@ class TransactionString extends TransactionExists
             'hash' => array_shift($arr),
         ];
 
-        return new TransactionExists($data);
+        return new TrxExists($data);
     }
 }

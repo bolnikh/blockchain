@@ -9,7 +9,7 @@ namespace Domain\Storages;
 use App\Interfaces\ServiceInterface;
 use Domain\BlockExists;
 use Domain\BlockNew;
-use Domain\TransactionExists;
+use Domain\TrxExists;
 
 
 class BlockChainStorageFile  extends BlockChainStorageAbstract implements ServiceInterface
@@ -57,12 +57,12 @@ class BlockChainStorageFile  extends BlockChainStorageAbstract implements Servic
             $bn_arr = json_decode($json_data, true, 10, JSON_THROW_ON_ERROR);
 
             $trans = [];
-            foreach ($bn_arr['transactions'] as $tr)
+            foreach ($bn_arr['trx'] as $tr)
             {
-                $trans[] = new TransactionExists($tr);
+                $trans[] = new TrxExists($tr);
             }
 
-            $bn_arr['transactions'] = $trans;
+            $bn_arr['trx'] = $trans;
 
             return new BlockExists($bn_arr);
         }

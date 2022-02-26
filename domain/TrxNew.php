@@ -4,19 +4,21 @@ declare(strict_types = 1);
 
 namespace Domain;
 
-class TransactionMining extends TransactionExists
+class TrxNew extends TrxExists
 {
     private KeyMaster $km;
+
+    protected $fillable = [
+        'to', 'amount', 'created_at', 'ttl'
+    ];
 
 
     public function __construct($data)
     {
+        parent::__construct($data);
+
         $this->km = new KeyMaster($data['private_key']);
-        $this->from = TransactionExists::MINING_FROM;
-        $this->to = $this->km->getPublicKey(true);
-        $this->amount = $data['amount'];
-        $this->created_at = time();
-        $this->ttl = 30 * 24 * 3600;
+        $this->from = $this->km->getPublicKey(true);
         $this->sign = $this->calcSign();
         $this->hash = $this->calcHash();
     }

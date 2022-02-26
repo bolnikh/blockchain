@@ -9,18 +9,18 @@ require_once __DIR__ . '\..\..\vendor\autoload.php';
 
 use PHPUnit\Framework\TestCase;
 use Domain\KeyMaster;
-use Domain\TransactionNew;
-use Domain\TransactionString;
-use Domain\Factory\TransactionNewFactory;
-use Domain\Factory\TransactionMiningFactory;
+use Domain\TrxNew;
+use Domain\TrxString;
+use Domain\Factory\TrxNewFactory;
+use Domain\Factory\TrxMiningFactory;
 
 
 
 
-class TransactionTest extends TestCase
+class TrxTest extends TestCase
 {
 
-    private function createTransactionExists()
+    private function createTrxExists()
     {
         $km = new KeyMaster();
         $km->generateKey();
@@ -32,11 +32,11 @@ class TransactionTest extends TestCase
             'private_key' => $km->getPrivateKey(),
         ];
 
-        $tn = new TransactionNew($tr_arr);
+        $tn = new TrxNew($tr_arr);
 
         $tn_string = $tn->toString();
 
-        $te = (new TransactionString($tn_string))->fromString();
+        $te = (new TrxString($tn_string))->fromString();
 
         return $te;
     }
@@ -44,7 +44,7 @@ class TransactionTest extends TestCase
 
     public function testTrCreateVerify()
     {
-        $te = $this->createTransactionExists();
+        $te = $this->createTrxExists();
 
         $this->assertTrue($te->verifySign());
         $this->assertTrue($te->verifyTtl());
@@ -53,7 +53,7 @@ class TransactionTest extends TestCase
 
     public function test_verify_ttl()
     {
-        $te = $this->createTransactionExists();
+        $te = $this->createTrxExists();
 
         $this->assertTrue($te->verifyTtl());
         $te->ttl = -10;
@@ -67,7 +67,7 @@ class TransactionTest extends TestCase
         $fake_public_key = $km->getPublicKey();
 
 
-        $te = $this->createTransactionExists();
+        $te = $this->createTrxExists();
 
         $this->assertTrue($te->verifySign());
         $ttl_old = $te->ttl;
@@ -101,18 +101,18 @@ class TransactionTest extends TestCase
 
     public function test_timeToSingBlock()
     {
-        $te = $this->createTransactionExists();
+        $te = $this->createTrxExists();
 
         $this->assertEquals($te->ttl, $te->timeToSingBlock());
     }
 
-    public function test_factory_transaction_new()
+    public function test_factory_trx_new()
     {
-        $tnf = new TransactionNewFactory();
+        $tnf = new TrxNewFactory();
 
         $tn = $tnf->produce();
 
-        $te = (new TransactionString($tn->toString()))->fromString();
+        $te = (new TrxString($tn->toString()))->fromString();
 
         $this->assertTrue($te->verifyHash());
         $this->assertTrue($te->verifySign());
@@ -120,13 +120,13 @@ class TransactionTest extends TestCase
 
     }
 
-    public function test_factory_transaction_mining()
+    public function test_factory_trx_mining()
     {
-        $tf = new TransactionMiningFactory();
+        $tf = new TrxMiningFactory();
 
         $t = $tf->produce();
 
-        $te = (new TransactionString($t->toString()))->fromString();
+        $te = (new TrxString($t->toString()))->fromString();
 
         $this->assertTrue($te->verifyHash());
         $this->assertTrue($te->verifySign());

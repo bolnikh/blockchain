@@ -117,7 +117,7 @@ class BlockChainStorageUnion  extends BlockChainStorageAbstract
                 if (!$bl->verifyBlock()) {
                     return false;
                 }
-                if (!$bcbv->validateBlockTransactionsBalance($this, $bl))
+                if (!$bcbv->validateBlockTrxBalance($this, $bl))
                 {
                     return false;
                 }
