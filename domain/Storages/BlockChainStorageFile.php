@@ -9,7 +9,6 @@ namespace Domain\Storages;
 use App\Interfaces\ServiceInterface;
 use Domain\BlockExists;
 use Domain\BlockNew;
-use Domain\TrxExists;
 
 
 class BlockChainStorageFile  extends BlockChainStorageAbstract implements ServiceInterface
@@ -54,17 +53,7 @@ class BlockChainStorageFile  extends BlockChainStorageAbstract implements Servic
         if (file_exists($blockFileName))
         {
             $json_data = file_get_contents($blockFileName);
-            $bn_arr = json_decode($json_data, true, 10, JSON_THROW_ON_ERROR);
-
-            $trans = [];
-            foreach ($bn_arr['trx'] as $tr)
-            {
-                $trans[] = new TrxExists($tr);
-            }
-
-            $bn_arr['trx'] = $trans;
-
-            return new BlockExists($bn_arr);
+            return BlockExists::fromJson($json_data);
         }
         return null;
     }

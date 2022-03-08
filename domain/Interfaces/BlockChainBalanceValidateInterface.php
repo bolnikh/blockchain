@@ -17,5 +17,7 @@ interface BlockChainBalanceValidateInterface
 
     public function validateNewTrxBalance(BlockChainStorageInterface $blockChainStorage, BlockNew $blockNew, TrxNew $transactionNew) : bool;
 
+    public function validateNewTrxBalanceAgainstTrxs(BlockChainStorageInterface $blockChainStorage, array $trxsSelected, TrxNew $transactionNew): bool;
+
     public function validateNewBlock(BlockChainStorageInterface $blockChainStorage, BlockNew $blockNew) : bool;
 }

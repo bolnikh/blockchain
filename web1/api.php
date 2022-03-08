@@ -1,6 +1,6 @@
 <?php
 
-// $_ENV['env_file'] = '.env';
+$_ENV['env_file'] = '.env1';
 
 require_once __DIR__ . '\..\app\bootstrap.php';
 

@@ -23,7 +23,7 @@ class PingAllNodesAction
 
     public function run() : void
     {
-        foreach ($this->ns->getList() as $node) {
+        foreach ($this->ns->getList(false) as $node) {
             $ndt = new NodeDataTransfer($node);
             $ndt->ping();
         }

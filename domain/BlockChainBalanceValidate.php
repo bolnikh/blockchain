@@ -63,6 +63,34 @@ class BlockChainBalanceValidate implements BlockChainBalanceValidateInterface
         return ($tr_spend + $transactionNew->amount) <= $blockChainStorage->balance($transactionNew->from);
     }
 
+    /**
+     * Проверить транзакцию для нового блока в блокчейне
+     * с учетом уже отобранных транзакций
+     *
+     * @param BlockChainStorageInterface $blockChainStorage
+     * @param array $trxs
+     * @param TrxNew $transactionNew
+     * @return bool
+     */
+    public function validateNewTrxBalanceAgainstTrxs(BlockChainStorageInterface $blockChainStorage, array $trxsSelected, TrxNew|TrxExists $transactionNew): bool
+    {
+        if ($transactionNew->from == TrxExists::MINING_FROM)
+        {
+            return true;
+        }
+
+        $tr_spend = 0;
+        foreach ($trxsSelected as $tr)
+        {
+            if ($tr->from == $transactionNew->from)
+            {
+                $tr_spend += $tr->amount;
+            }
+        }
+
+        return ($tr_spend + $transactionNew->amount) <= $blockChainStorage->balance($transactionNew->from);
+    }
+
     public function validateNewBlock(BlockChainStorageInterface $blockChainStorage, BlockNew $blockNew): bool
     {
         // TODO: Implement validateNewBlock() method.

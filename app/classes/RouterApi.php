@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace App\Classes;
 
 use App\Exceptions\RouteException;
+use App\Logger\Logger;
 
 class RouterApi
 {
     private string $prefix = 'Api';
     private ServiceLocator $service;
     private Config $config;
+    private Logger $logger;
 
     public function __construct()
     {
         $this->service = ServiceLocator::instance();
         $this->config = $this->service->get('Config');
+        $this->logger = $this->service->get('Logger');
     }
 
     public function run()
@@ -26,7 +29,7 @@ class RouterApi
                 $data = [
                     'coinname' => $this->config->coinname,
                     'version' => $this->config->version,
-                    'controller' => 'index',
+                    'controller' => 'info',
                     'method' => 'index',
                     'params' => [],
                 ];
@@ -65,7 +68,17 @@ class RouterApi
             $result = $contObj->$method($data['params']);
 
             header('Content-type: application/json');
-            echo json_encode($result, JSON_UNESCAPED_UNICODE);
+            echo $result_json = json_encode($result, JSON_UNESCAPED_UNICODE);
+
+            $data_json = json_encode($data);
+            $log_str = "
+            GET
+            $data_json
+            RESPONSE
+            $result_json
+        ";
+            $this->logger->debug($log_str);
+
         } catch (\Exception $e) {
             header('Content-type: application/json');
             echo json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);

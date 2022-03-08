@@ -1,8 +1,12 @@
 .idea
 /storage
+/storage1
+/storage2
 
 /vendor
 .env
+.env1
+.env2
 
 test/.phpunit.result.cache
 .php-cs-fixer.cache

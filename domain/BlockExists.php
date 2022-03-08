@@ -155,4 +155,24 @@ class BlockExists
         }
         return false;
     }
+
+    public function toJson() : string
+    {
+        return json_encode($this);
+    }
+
+    public static function fromJson(string $json_data) : BlockExists
+    {
+        $bn_arr = json_decode($json_data, true, 10, JSON_THROW_ON_ERROR);
+
+        $trans = [];
+        foreach ($bn_arr['trx'] as $tr)
+        {
+            $trans[] = new TrxExists($tr);
+        }
+
+        $bn_arr['trx'] = $trans;
+
+        return new BlockExists($bn_arr);
+    }
 }

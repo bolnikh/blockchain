@@ -1,6 +1,10 @@
 <?php
 
 
+use App\Actions\CreateNewBlock;
+use App\Actions\DeleteExpiredTrxAction;
+use App\Actions\PingAllNodesAction;
+use App\Actions\SendAllTrxAction;
 use Domain\TrxNew;
 
 require_once __DIR__.'/../app/bootstrap.php';
@@ -30,6 +34,10 @@ $nodeStorage = $service->get('NodeStorage');
 
 while (true)
 {
+    (new PingAllNodesAction())->run();
+    (new DeleteExpiredTrxAction())->run();
+
+
     $tnx = null;
     // generate trnx
     if (mt_rand(0, 10) < 5) {
@@ -37,7 +45,7 @@ while (true)
 
         $nodeBalance = $blockChainStorage->balance($config->node_public_key);
         if ($nodeBalance > 100) {
-            $fileName = ROOT_DIR.'/storage/keys/key'.mt_rand(1, 5).'.pem';
+            $fileName = STORAGE_DIR.'/keys/key'.mt_rand(1, 5).'.pem';
             $km_to = new \Domain\KeyMaster(file_get_contents($fileName));
 
             $tnx = new TrxNew([
@@ -50,10 +58,9 @@ while (true)
         }
     }
 
-    // send trnx
-    if ($tnx) {
+    (new SendAllTrxAction())->run();
 
-    }
+
 
     // load trnx
 
@@ -61,9 +68,11 @@ while (true)
 
     // create new block using trnx
 
+    (new CreateNewBlock())->run();
+
     // send new block to other nodes
 
 
     echo 'sleep'."\n";
-    sleep(20);
+    sleep(10);
 }

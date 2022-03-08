@@ -29,9 +29,9 @@ class TrxStorageFile extends TrxStorageAbstract
     {
         if (is_string($trx))
         {
-            return $this->storageDir.$this->storageSubDir.$trx.'.'.$this->fileExt;
+            return $this->storageDir.$trx.'.'.$this->fileExt;
         } else {
-            return $this->storageDir.$this->storageSubDir.$trx->hash.'.'.$this->fileExt;
+            return $this->storageDir.$trx->hash.'.'.$this->fileExt;
         }
     }
 
@@ -43,7 +43,7 @@ class TrxStorageFile extends TrxStorageAbstract
 
     public function getKeyList(): array
     {
-        $files = scandir($this->storageDir.$this->storageSubDir);
+        $files = scandir($this->storageDir);
         $keys = [];
 
         foreach ($files as $file)

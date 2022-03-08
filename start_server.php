@@ -2,7 +2,4 @@
 
 chdir(__DIR__);
 
-if (empty($argv[1])) {
-    die('Add server credentials, for example 127.0.0.1:8000');
-}
-exec('php -S '.$argv[1].' -t web/');
+exec('php -S 127.0.0.1:8000 -t web/');

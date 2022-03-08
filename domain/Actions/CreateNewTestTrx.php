@@ -22,7 +22,7 @@ class CreateNewTestTrx implements RunnableInterface
         $trx = $factory->get();
 
         if ($trx) {
-            $getn = new GetExternalNewTrx($trx);
+            $getn = new RequestExternalNewTrx($trx);
             $getn->run();
         }
     }

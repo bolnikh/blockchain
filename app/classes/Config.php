@@ -6,6 +6,7 @@ namespace App\Classes;
 
 use App\Interfaces\ServiceInterface;
 use Domain\KeyMaster;
+use PHPUnit\Util\Exception;
 
 class Config implements ServiceInterface
 {
@@ -28,9 +29,11 @@ class Config implements ServiceInterface
     public string $version = '0.01';
 
     public string $node_private_key = '';
-    public string $node_private_key_file = __DIR__.'/../../storage/keys/default_node_private.key';
+    public string $node_private_key_file = __DIR__.'/keys/default_node_private.key';
 
     public string $node_public_key = '';
+
+    public string $storage_dir = 'storage/';
 
     public $storage_type = 'file'; // memory | file | db
 
@@ -38,10 +41,14 @@ class Config implements ServiceInterface
     {
         // load env before (class DotEnv)
 
+        $env = '.env';
+        if (isset($_ENV['env_file'])) {
+            $env = $_ENV['env_file'];
+        }
         $path_to_env =  __DIR__ . '/../../';
-        $env_filename = $path_to_env . '.env';
+        $env_filename = $path_to_env . $env;
         if (!file_exists($env_filename)) {
-            return;
+            throw new \Exception('Bad env file');
         }
         (new DotEnv($env_filename))->load();
 
@@ -59,6 +66,7 @@ class Config implements ServiceInterface
         $this->node_private_key = file_get_contents($this->node_private_key_file);
         $km = new KeyMaster($this->node_private_key);
         $this->node_public_key = $km->getPublicKey(true);
+        $this->storage_dir = strval(self::env('storage_dir', $this->storage_dir));
         $this->storage_type = strval(self::env('storage_type', $this->storage_type));
     }
 

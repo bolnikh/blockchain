@@ -36,7 +36,7 @@ class TrxNewBalancedFactory
     {
         $km_from = new KeyMaster($this->config->node_private_key);
 
-        $key_file = ROOT_DIR.'/storage/keys/key'.mt_rand(1,5).'.pem';
+        $key_file = STORAGE_DIR.'/keys/key'.mt_rand(1,5).'.pem';
         $km_to = new KeyMaster(file_get_contents($key_file));
 
         $balance_from = $this->blockChainStorage->balance($km_from->getPublicKey(true));

@@ -7,7 +7,9 @@ namespace App\Controller\Api;
 
 
 use App\Classes\ServiceLocator;
+use Domain\BlockExists;
 use Domain\Interfaces\BlockChainStorageInterface;
+use Domain\Storages\BlockChainStorageUnion;
 
 
 class BlockChainController
@@ -33,5 +35,17 @@ class BlockChainController
     public function action_getBalance(array $params)
     {
         return ['balance' => $this->blockChainStorage->balance($params['from'])];
+    }
+
+    public function action_addBlocks(array $params)
+    {
+        $newBlocks = [];
+        foreach ($params['newBlocks'] as $nb_json) {
+            $newBlocks[] = BlockExists::fromJson($nb_json);
+        }
+
+        $bcsu = new BlockChainStorageUnion($this->blockChainStorage, $newBlocks);
+
+        return ['result' => $bcsu->merge()];
     }
 }

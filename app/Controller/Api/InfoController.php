@@ -23,13 +23,4 @@ class InfoController
         return $arr;
     }
 
-
-
-
-
-
-    public function action_hosts() : array
-    {
-        return [];
-    }
 }

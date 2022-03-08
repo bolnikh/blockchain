@@ -5,16 +5,22 @@ declare(strict_types=1);
 
 namespace App\Classes;
 
+use _PHPStan_9488d3497\Psr\Log\LogLevel;
 use Domain\Node;
+use App\Logger\Logger;
 
 class NodeDataTransfer
 {
+    private ServiceLocator $sl;
     private Config $config;
+    private Logger $logger;
 
     public function __construct(private Node $node)
     {
-        $sl = ServiceLocator::instance();
-        $this->config = $sl->get('Config');
+        $this->sl = ServiceLocator::instance();
+        $this->config = $this->sl->get('Config');
+        $this->logger = $this->sl->get('Logger');
+
     }
 
     public function send(array $data) : array|bool
@@ -27,7 +33,7 @@ class NodeDataTransfer
         }
 
         if (empty($data['controller'])) {
-            $data['controller'] = 'index';
+            $data['controller'] = 'info';
         }
         if (empty($data['method'])) {
             $data['method'] = 'index';
@@ -48,16 +54,21 @@ class NodeDataTransfer
 
         $json_response = curl_exec($curl);
 
-//        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-//        if ($status != 200) {
-//            die("Error: call to URL $url failed with status $status, response $json_response, curl_error " . curl_error($curl) . ", curl_errno " . curl_errno($curl));
-//        }
-
+        $data_json = json_encode($data);
+        $log_str = "
+            SEND
+            $data_json
+            STATUS
+            $status
+            RESPONSE
+            $json_response
+        ";
+        $this->logger->debug($log_str);
 
         curl_close($curl);
-//var_dump($status);
-//var_dump($json_response);
+
         return is_string($json_response) ? json_decode($json_response, true) : false;
     }
 
