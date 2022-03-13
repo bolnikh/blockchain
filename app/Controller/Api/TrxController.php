@@ -11,7 +11,6 @@ use App\Classes\ServiceLocator;
 use Domain\Interfaces\BlockChainStorageInterface;
 use Domain\Interfaces\TrxStorageInterface;
 use Domain\TrxExists;
-use Domain\TrxString;
 
 
 class TrxController
@@ -30,9 +29,8 @@ class TrxController
     public function action_insertTrx(array $params) : array
     {
         $result = [];
-
-        foreach ($params['trxs'] as $trxStr) {
-            $trx = (new TrxString($trxStr))->fromString();
+        foreach ($params['trxs'] as $trxJson) {
+            $trx = new TrxExists(json_decode($trxJson));
             if ($this->trxStorage->isExists($trx->hash)) {
                 $result[$trx->hash] = ['error' => 'already stored'];
                 continue;
@@ -61,7 +59,7 @@ class TrxController
 
     public function action_getTrx(array $params) : TrxExists
     {
-        return $this->trxStorage->get($params['trx_hash']);
+        return ['trx' => $this->trxStorage->get($params['trx_hash'])];
     }
 
 }

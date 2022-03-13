@@ -9,6 +9,7 @@ namespace Domain\Storages;
 use Domain\BlockChainBalanceValidate;
 use Domain\BlockExists;
 use Domain\BlockNew;
+use Domain\Exceptions\BlockChainUnionException;
 use Domain\Interfaces\BlockChainStorageInterface;
 
 
@@ -20,13 +21,19 @@ use Domain\Interfaces\BlockChainStorageInterface;
  * если совпадения блоков нет, то надо просто перезаписать текущий блокчейн
  *
  * @package Domain\Storages
+ *
+ * надо обрабатывать ситуацию когда не хватает новых блоков
+ * чтобы восстановить  блокчейн
+ * например блокчейн пустой а нам пришли блоки с номерами 11212-11222
+ * блокчен может быть частично заполнен и ситуация все равно может повторится
+ *
  */
 class BlockChainStorageUnion  extends BlockChainStorageAbstract
 {
 
 
     // последний совпадающий ид в $bs и $newBlocks
-    private int $lastBsId;
+    private int|null $lastBsId = null;
 
     const NO_NEED_MERGE = 1;
     const ERROR_VALIDATE_NEW_BLOCKS = 2;
@@ -80,7 +87,9 @@ class BlockChainStorageUnion  extends BlockChainStorageAbstract
 
         if (is_null($this->lastBsId))
         {
-            $this->lastBsId = 0; // полностью берем блоки из массива $newBlocks
+            if ($this->newBlocks[0]->id != 1) {
+                throw new BlockChainUnionException('Can not merge new Blocks');
+            }
         }
     }
 
@@ -91,11 +100,6 @@ class BlockChainStorageUnion  extends BlockChainStorageAbstract
      */
     public function needMergeNewBlocks() : bool
     {
-        if (is_null($this->lastBsId))
-        {
-            $this->findLastBsId();
-        }
-
         $countNewBlocks = 0;
         foreach ($this->newBlocks as $bl) {
             if ($bl->id > $this->lastBsId) {

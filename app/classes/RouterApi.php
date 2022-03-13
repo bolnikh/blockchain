@@ -70,9 +70,10 @@ class RouterApi
             header('Content-type: application/json');
             echo $result_json = json_encode($result, JSON_UNESCAPED_UNICODE);
 
+            $url = $_SERVER['REMOTE_ADDR'];
             $data_json = json_encode($data);
             $log_str = "
-            GET
+            GET $url
             $data_json
             RESPONSE
             $result_json

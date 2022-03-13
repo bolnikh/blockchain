@@ -1,10 +1,13 @@
 <?php
 
 
-use App\Actions\CreateNewBlock;
+use App\Actions\CreateNewBlockAction;
 use App\Actions\DeleteExpiredTrxAction;
+use App\Actions\LoadAndReplaceBlocksAction;
+use App\Actions\LoadTrxAction;
 use App\Actions\PingAllNodesAction;
 use App\Actions\SendAllTrxAction;
+use App\Actions\SendNewBlockAction;
 use Domain\TrxNew;
 
 require_once __DIR__.'/../app/bootstrap.php';
@@ -60,17 +63,18 @@ while (true)
 
     (new SendAllTrxAction())->run();
 
-
-
     // load trnx
+    (new LoadTrxAction())->run();
+
 
     // load and replace blockchain from other nodes
+    (new LoadAndReplaceBlocksAction())->run();
 
     // create new block using trnx
-
-    (new CreateNewBlock())->run();
+    (new CreateNewBlockAction())->run();
 
     // send new block to other nodes
+    (new SendNewBlockAction())->run();
 
 
     echo 'sleep'."\n";

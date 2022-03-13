@@ -175,4 +175,18 @@ class BlockExists
 
         return new BlockExists($bn_arr);
     }
+
+    public static function fromArr(array $arr) : BlockExists
+    {
+
+        $trans = [];
+        foreach ($arr['trx'] as $tr)
+        {
+            $trans[] = new TrxExists($tr);
+        }
+
+        $arr['trx'] = $trans;
+
+        return new BlockExists($arr);
+    }
 }

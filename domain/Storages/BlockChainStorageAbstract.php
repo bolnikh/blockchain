@@ -65,7 +65,7 @@ abstract class BlockChainStorageAbstract implements BlockChainStorageInterface
                 $start = $max_id - $num;
                 $end = $max_id;
             }
-            for ($i = $start; $i < $end; $i++)
+            for ($i = $start; $i <= $end; $i++)
             {
                 $arr[] = $this->getById($i);
             }

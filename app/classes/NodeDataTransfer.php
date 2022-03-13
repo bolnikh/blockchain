@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace App\Classes;
 
-use _PHPStan_9488d3497\Psr\Log\LogLevel;
 use Domain\Node;
 use App\Logger\Logger;
 
@@ -56,9 +55,10 @@ class NodeDataTransfer
 
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
+        $url = $this->node->url();
         $data_json = json_encode($data);
         $log_str = "
-            SEND
+            SEND $url
             $data_json
             STATUS
             $status
@@ -103,15 +103,5 @@ class NodeDataTransfer
         $nodeStorage->store($this->node);
     }
 
-    public function getNewTrx()
-    {
-        try {
-            $data = $this->send([
-                'controller' => 'transaction',
-                'method' => 'index',
-            ]);
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
+
 }

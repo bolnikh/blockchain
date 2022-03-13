@@ -12,7 +12,7 @@ use Domain\BlockNew;
 use Domain\Interfaces\BlockChainStorageInterface;
 use Domain\Interfaces\TrxStorageInterface;
 
-class CreateNewBlock
+class CreateNewBlockAction
 {
 
     private ServiceLocator $sl;

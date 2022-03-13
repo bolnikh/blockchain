@@ -22,22 +22,22 @@ class BlockChainController
     }
 
 
-    public function action_getMaxId()
+    public function action_getMaxId() : array
     {
         return ['max_id' => $this->blockChainStorage->getMaxId()];
     }
 
-    public function action_getById(array $params)
+    public function action_getById(array $params) : array
     {
         return ['block' => $this->blockChainStorage->getById($params['block_id'])];
     }
 
-    public function action_getBalance(array $params)
+    public function action_getBalance(array $params) : array
     {
         return ['balance' => $this->blockChainStorage->balance($params['from'])];
     }
 
-    public function action_addBlocks(array $params)
+    public function action_addBlocks(array $params) : array
     {
         $newBlocks = [];
         foreach ($params['newBlocks'] as $nb_json) {
@@ -47,5 +47,14 @@ class BlockChainController
         $bcsu = new BlockChainStorageUnion($this->blockChainStorage, $newBlocks);
 
         return ['result' => $bcsu->merge()];
+    }
+
+    public function action_getLastArr(array $params) : array
+    {
+        $num = intval($params['num'] ?? 10);
+
+        $blkArr = $this->blockChainStorage->getLastArr($num);
+
+        return ['blkArr' => $blkArr];
     }
 }
