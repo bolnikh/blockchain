@@ -2,4 +2,4 @@
 
 chdir(__DIR__);
 
-exec('php -S 127.0.0.1:8002 -t web2/');
+exec('php -S 127.0.0.1:8002 -t web2/ route_env2.php');

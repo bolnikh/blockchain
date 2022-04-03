@@ -8,6 +8,7 @@ use App\Actions\LoadTrxAction;
 use App\Actions\PingAllNodesAction;
 use App\Actions\SendAllTrxAction;
 use App\Actions\SendNewBlockAction;
+use Domain\Exceptions\BlockChainUnionException;
 use Domain\TrxNew;
 
 require_once __DIR__.'/../app/bootstrap.php';

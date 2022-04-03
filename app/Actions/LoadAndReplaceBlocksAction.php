@@ -55,8 +55,14 @@ class LoadAndReplaceBlocksAction
                 $blkArr[] = BlockExists::fromArr($arr);
             }
 
-            $bcsu = new BlockChainStorageUnion($this->bs, $blkArr);
-            $bcsu->merge();
+            try {
+                $bcsu = new BlockChainStorageUnion($this->bs, $blkArr);
+                $bcsu->merge();
+            } catch (BlockChainUnionException $e) {
+                // @todo тут надо глубже выяснять как можно смержить. стандартных 10 блоково не хватило
+                // возможно с нуля надо загружать
+            }
+
         }
 
         return ['ok' => 1];
