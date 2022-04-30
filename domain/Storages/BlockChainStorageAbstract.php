@@ -185,4 +185,15 @@ abstract class BlockChainStorageAbstract implements BlockChainStorageInterface
         return $this->position <= $this->getMaxId();
     }
 
+
+    public function getHashes(int $offset = 0, int $limit = 30) : array {
+        $blockArr = $this->getAll($offset, $limit);
+        $resArr = [];
+
+        foreach ($blockArr as $bl) {
+            $resArr[$bl->id] = $bl->getHash();
+        }
+
+        return $resArr;
+    }
 }

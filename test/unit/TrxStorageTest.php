@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Domain\Exceptions\TrxNotExists;
+use Domain\Exceptions\TrxNotExistsException;
 use Domain\Factory\TrxNewFactory;
 use Domain\Storages\TrxStorageFile;
 use Domain\Storages\TrxStorageMemory;
@@ -72,7 +72,7 @@ class TrxStorageTest extends TestCase
     public function test_not_exist_exception()
     {
         $tnx = $this->factory->reset()->produce();
-        $this->expectException(TrxNotExists::class);
+        $this->expectException(TrxNotExistsException::class);
         $this->storage->get($tnx->hash);
 
 

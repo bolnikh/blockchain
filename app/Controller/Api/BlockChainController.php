@@ -10,6 +10,7 @@ use App\Classes\ServiceLocator;
 use Domain\BlockExists;
 use Domain\Interfaces\BlockChainStorageInterface;
 use Domain\Storages\BlockChainStorageUnion;
+use JetBrains\PhpStorm\ArrayShape;
 
 
 class BlockChainController
@@ -56,5 +57,26 @@ class BlockChainController
         $blkArr = $this->blockChainStorage->getLastArr($num);
 
         return ['blkArr' => $blkArr];
+    }
+
+
+    public function action_getAll(array $params) : array
+    {
+        $offset = intval($params['offset'] ?? 0);
+        $limit = intval($params['limit'] ?? 10);
+
+        $allArr = $this->blockChainStorage->getAll($offset, $limit);
+
+        return ['allArr' => $allArr];
+    }
+
+    public function action_getHashes(array $params) : array
+    {
+        $offset = intval($params['offset'] ?? 0);
+        $limit = intval($params['limit'] ?? 100);
+
+        $hashArr = $this->blockChainStorage->getHashes($offset, $limit);
+
+        return ['hashArr' => $hashArr];
     }
 }

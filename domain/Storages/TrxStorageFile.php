@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace Domain\Storages;
 
 
-use Domain\Exceptions\TrxNotExists;
+use Domain\Exceptions\TrxNotExistsException;
 use Domain\TrxExists;
 use Domain\TrxNew;
 
@@ -68,7 +68,7 @@ class TrxStorageFile extends TrxStorageAbstract
     {
         if (!$this->isExists($key))
         {
-            throw new TrxNotExists('Can not get trx');
+            throw new TrxNotExistsException('Can not get trx');
         }
 
         $json_data = file_get_contents($this->trxFileName($key));
