@@ -99,12 +99,6 @@ class TrxTest extends TestCase
     }
 
 
-    public function test_timeToSingBlock()
-    {
-        $te = $this->createTrxExists();
-
-        $this->assertEquals($te->ttl, $te->timeToSingBlock());
-    }
 
     public function test_factory_trx_new()
     {

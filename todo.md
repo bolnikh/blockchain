@@ -21,4 +21,25 @@
 
 возможность создавать временные хранилища и удалять их
 
+---------
+
+Для реализации вышесказанного готовим универсальное хранилище
+
+key value хранилище с веткой branch - int, 0 default
+так в хранилище можно будет хранить несколько версий (пока надо две) данных
+если для branch нет данных, берем их из default 
+То есть получается хранилище, почти полностью совпадающее, но начиная с какой-то
+точки отклоняющее в свою ветвь.
+
+Методы
+get(string key, int branch) : string
+store(string key, int branch, string value) : void
+remove(string key, int branch)
+isExist(string key, int branch)
+removeBranch(int branch) - удалить все значения ветки
+mergeBranch(int branchTo, int branchFrom) - замещает все объекты branchTo на branchFrom если таковые имеются
+reset() - очищаем хранилище
+list() : array of string key - список ключей
+
+
 

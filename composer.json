@@ -8,5 +8,8 @@
   "require": { "php": ">=8.0", "ext-openssl": "*", "ext-json": "*", "ext-curl": "*",
     "ext-pdo": "*",
     "psr/log": "~1.0"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "^1.5"
   }
 }

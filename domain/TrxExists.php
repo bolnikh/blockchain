@@ -108,13 +108,6 @@ class TrxExists
         return $this->verifyTtl() && $this->isBaseValid();
     }
 
-    /**
-     * Время за которое надо создать блок с этой транзакцией, чтобы она не протухла
-     * @return int
-     */
-    public function timeToSingBlock() : int {
-        return  ($this->created_at + $this->ttl) - time();
-    }
 
     /**
      * Строковое представление транзакции

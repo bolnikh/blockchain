@@ -32,4 +32,26 @@ class MemoryKeyStorage implements KeyStorageInterface
     {
         $this->storage[$key] = $value;
     }
+
+
+    /**
+     * Список всех ключей
+     *
+     * @return array keys
+     */
+    public function list() : array
+    {
+        return array_keys($this->storage);
+    }
+
+    /**
+     * Удаляет все данные
+     */
+    public function deleteAll(string $iAmSure) : void {
+        if ($iAmSure != 'I am sure to delete all') {
+            return;
+        }
+        $this->storage = [];
+    }
+
 }

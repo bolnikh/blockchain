@@ -34,4 +34,26 @@ class FilePathTest extends TestCase
         $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '2:2', $ext = 'json');
         $this->assertEquals($fks->getFilePath('123456'), $dir.'/'.'12/34/56'.'.'.$ext);
     }
+
+    public function test_smallfile_path()
+    {
+        $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '', 'json');
+        $this->assertEquals($fks->getSubPath('6'), '6');
+
+        $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '1', 'json');
+        $this->assertEquals($fks->getSubPath('6'), '0/06');
+
+        $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '2', 'json');
+        $this->assertEquals($fks->getSubPath('6'), '00/06');
+
+        $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '2:1', 'json');
+        $this->assertEquals($fks->getSubPath('6'), '00/0/06');
+
+        $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '2:2', 'json');
+        $this->assertEquals($fks->getSubPath('6'), '00/00/06');
+
+
+        $fks = new FileKeyStorage($dir = __DIR__.'/../../storage', '2:2', $ext = 'json');
+        $this->assertEquals($fks->getFilePath('6'), $dir.'/'.'00/00/06'.'.'.$ext);
+    }
 }
